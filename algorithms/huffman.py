@@ -1,74 +1,74 @@
 import heapq
-from collections import Counter, namedtuple
-
-# Define a simple node class for our Huffman Tree
-class Node(namedtuple("Node", ["char", "freq"])):
-    def __lt__(self, other):
-        return self.freq < other.freq
+from collections import defaultdict
 
 class HuffmanTree:
     def __init__(self):
-        self.codes = {}  # Dictionary to store the Huffman codes for each symbol
+        self.tree = None
+        self.codes = {}
+        self.reverse_codes = {}
 
-    def build_tree(self, frequency):
-        # Priority queue for building the Huffman tree
-        heap = [Node(char, freq) for char, freq in frequency.items()]
+    class Node:
+        def __init__(self, symbol, frequency):
+            self.symbol = symbol
+            self.frequency = frequency
+            self.left = None
+            self.right = None
+        
+        # Define comparison operators for the heap
+        def __lt__(self, other):
+            return self.frequency < other.frequency
+        
+        def __eq__(self, other):
+            return self.frequency == other.frequency
+
+    def build_tree(self, frequency_dict):
+        # Create a priority queue (min-heap)
+        heap = [self.Node(symbol, freq) for symbol, freq in frequency_dict.items()]
         heapq.heapify(heap)
         
+        # Merge nodes until only one remains (the root of the tree)
         while len(heap) > 1:
-            # Pop two nodes with lowest frequency
             left = heapq.heappop(heap)
             right = heapq.heappop(heap)
             
-            # Create a new internal node with combined frequency
-            merged = Node(None, left.freq + right.freq)
-            heapq.heappush(heap, (merged.freq, merged, left, right))
+            # Create a new node with the combined frequency of left and right
+            merged = self.Node(None, left.frequency + right.frequency)
+            merged.left = left
+            merged.right = right
+            
+            heapq.heappush(heap, merged)
         
-        # Final tree node contains the root of the Huffman Tree
-        if heap:
-            self._generate_codes(heap[0][1], "")
+        # The final element in the heap is the root of the Huffman tree
+        self.tree = heap[0]
+        
+        # Generate codes for each symbol by traversing the tree
+        self._generate_codes(self.tree, "")
 
     def _generate_codes(self, node, code):
-        if node is None:
-            return
-        
-        if node.char is not None:
-            # It's a leaf node, assign the current code
-            self.codes[node.char] = code
-            return
-        
-        # Traverse the left and right branches
-        self._generate_codes(node[2], code + "0")  # Left branch
-        self._generate_codes(node[3], code + "1")  # Right branch
+        # Recursively traverse the tree to generate codes
+        if node is not None:
+            if node.symbol is not None:
+                # Leaf node, add to codes
+                self.codes[node.symbol] = code
+                self.reverse_codes[code] = node.symbol
+            self._generate_codes(node.left, code + "0")
+            self._generate_codes(node.right, code + "1")
 
     def encode(self, data):
-        """Encodes data using the generated Huffman codes."""
-        return ''.join(self.codes[char] for char in data)
+        # Encode data using the Huffman codes
+        return ''.join(self.codes[symbol] for symbol in data)
 
     def decode(self, encoded_data):
-        """Decodes encoded data using the Huffman tree."""
-        decoded = []
-        node = self.tree
+        # Decode the Huffman-encoded data using the reverse_codes
+        decoded_data = []
+        current_code = ""
+        # We need to populate reverse_codes too:
+        for key, value in self.codes.items():
+            self.reverse_codes[value] = key
         for bit in encoded_data:
-            node = node[2] if bit == '0' else node[3]  # Traverse based on bit
-            if node.char is not None:  # Leaf node found
-                decoded.append(node.char)
-                node = self.tree  # Restart from root
-        return ''.join(decoded)
-
-# Example usage
-# Step 1: Calculate frequency of each symbol in the quantized data
-# Assuming `quantized_dct_patches` is flattened to a 1D array for encoding
-# quantized_data = quantized_dct_patches.flatten()
-# frequency = Counter(quantized_data)
-
-# # Step 2: Build Huffman Tree
-# huffman_tree = HuffmanTree()
-# huffman_tree.build_tree(frequency)
-
-# # Step 3: Encode data
-# encoded_data = huffman_tree.encode(quantized_data)
-# print("Encoded data:", encoded_data)
-
-# # To decode
-# decoded_data = huffman_tree.decode(encoded_data)
+            current_code += bit
+            if current_code in self.reverse_codes:
+                decoded_data.append(self.reverse_codes[current_code])
+                current_code = ""
+        
+        return decoded_data

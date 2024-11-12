@@ -3,6 +3,12 @@ import json
 import pickle
 from scipy.fftpack import idct
 import matplotlib.pyplot as plt
+import sys
+sys.path.append('..')
+from algorithms.huffman import HuffmanTree
+from algorithms.dct import Dct_f
+from config.config import Config
+from collections import Counter
 
 def save_compressed_image(filename, quantized_data, image_shape, patch_size, huffman_tree):
     """
@@ -47,6 +53,7 @@ def load_compressed_image(filename):
     # Reconstruct Huffman tree from saved codes
     huffman_tree = HuffmanTree()
     huffman_tree.codes = metadata["huffman_codes"]
+    # print(huffman_tree.codes)
     
     # Decode the Huffman encoded data
     decoded_quantized_data = np.array(huffman_tree.decode(encoded_data), dtype=np.int32)
@@ -55,8 +62,9 @@ def load_compressed_image(filename):
     patch_size = metadata["patch_size"]
     image_shape = metadata["image_shape"]
     patches_shape = (image_shape[0] // patch_size[0], image_shape[1] // patch_size[1])
-    quantized_patches = decoded_quantized_data.reshape(patches_shape + patch_size)
-    
+    # print(huffman_tree.decode(encoded_data))
+    quantized_patches = decoded_quantized_data.reshape(patches_shape + tuple(patch_size))
+  
     # Inverse DCT for each patch to reconstruct the image
     reconstructed_patches = np.array([idct(idct(patch.T, norm='ortho').T, norm='ortho') 
                                       for patch in quantized_patches.reshape(-1, *patch_size)])
@@ -64,12 +72,44 @@ def load_compressed_image(filename):
     
     return reconstructed_image
 
+
+def flatten_quantized_data(quantized_dct_patches):
+    """
+    Flatten the quantized DCT patches into a 1D list of values.
+    """
+    return quantized_dct_patches.flatten().tolist()
+
+image = np.random.rand(256, 256) * 255  # Replace with actual image data
+image = image.astype(np.uint8)
+dct_image = Dct_f.compute_dct_on_patches(image)
+quantized_dct_image = Dct_f.quantize_dct_coefficients(dct_image)
+flat_quantized_data = flatten_quantized_data(quantized_dct_image)
+frequency = Counter(flat_quantized_data)
+
+# 3. Build the Huffman Tree using the frequency dictionary
+huffman_tree = HuffmanTree()  # Assuming HuffmanTree is implemented as shown previously
+huffman_tree.build_tree(frequency)
+
+# 4. Encode the quantized data using Huffman codes
+encoded_data = huffman_tree.encode(flat_quantized_data)
+
+image_shape = image.shape
+
+
 # Usage Example:
 # Assuming `encoded_data` is the Huffman encoded output and `image_shape` is the original image's shape
-# save_compressed_image("compressed_image.bin", encoded_data, image_shape, patch_size=(8, 8), huffman_tree=huffman_tree)
+save_compressed_image("compressed_image.bin", encoded_data, image_shape, patch_size=(8, 8), huffman_tree=huffman_tree)
 
 # Load and display the decompressed image
 reconstructed_image = load_compressed_image("compressed_image.bin")
-plt.imshow(reconstructed_image, cmap='gray')
-plt.axis('off')
+fig, axes = plt.subplots(1, 2, figsize=(12, 6))
+axes[0].imshow(image, cmap='gray')
+axes[0].set_title('Original Image')
+axes[0].axis('off')
+
+axes[1].imshow(reconstructed_image, cmap='gray')
+axes[1].set_title('Reconstructed Image')
+axes[1].axis('off')
+
+plt.tight_layout()
 plt.show()

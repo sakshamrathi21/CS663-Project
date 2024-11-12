@@ -6,7 +6,7 @@ import sys
 sys.path.append('..')
 from config.config import Config
 
-class DCT:
+class Dct_f:
     config = Config()
     def compute_dct_on_patches(image, patch_size=config.patch_size):
         if len(image.shape) == 3:
