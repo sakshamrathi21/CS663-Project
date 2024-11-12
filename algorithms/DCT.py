@@ -2,9 +2,13 @@ import numpy as np
 from scipy.fftpack import dct
 from skimage.util import view_as_blocks
 from skimage import io, color
+import sys
+sys.path.append('..')
+from config.config import Config
 
 class DCT:
-    def compute_dct_on_patches(image, patch_size=(8, 8)):
+    config = Config()
+    def compute_dct_on_patches(image, patch_size=config.patch_size):
         if len(image.shape) == 3:
             image = color.rgb2gray(image)
         h, w = image.shape
@@ -17,3 +21,8 @@ class DCT:
         dct_patches = np.array([dct(dct(patch.T, norm='ortho').T, norm='ortho') for patch in patches])
         dct_image = dct_patches.reshape(patches_shape)
         return dct_image
+
+    def quantize_dct_coefficients(dct_patches, quant_matrix = config.quantization_matrix):
+        assert dct_patches.shape[-2:] == quant_matrix.shape, "Quantization matrix must match the patch size"
+        quantized_patches = np.round(dct_patches / quant_matrix).astype(np.int32)
+        return quantized_patches
