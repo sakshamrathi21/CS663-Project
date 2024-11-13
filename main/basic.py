@@ -9,6 +9,7 @@ from algorithms.huffman import HuffmanTree
 from algorithms.dct import Dct_f
 from config.config import Config
 from collections import Counter
+from skimage.color import rgb2gray
 
 def save_compressed_image(filename, quantized_data, image_shape, patch_size, huffman_tree):
     """
@@ -48,6 +49,7 @@ def load_compressed_image(filename):
         # Read metadata
         metadata = json.loads(file.readline().decode('utf-8'))
         # Read encoded data
+        print(metadata)
         encoded_data = pickle.load(file)
     
     # Reconstruct Huffman tree from saved codes
@@ -63,6 +65,7 @@ def load_compressed_image(filename):
     image_shape = metadata["image_shape"]
     patches_shape = (image_shape[0] // patch_size[0], image_shape[1] // patch_size[1])
     # print(huffman_tree.decode(encoded_data))
+    # print(encoded_data)
     quantized_patches = decoded_quantized_data.reshape(patches_shape + tuple(patch_size))
   
     # Inverse DCT for each patch to reconstruct the image
@@ -79,9 +82,20 @@ def flatten_quantized_data(quantized_dct_patches):
     """
     return quantized_dct_patches.flatten().tolist()
 
-image = np.random.rand(256, 256) * 255  # Replace with actual image data
-image = image.astype(np.uint8)
-dct_image = Dct_f.compute_dct_on_patches(image)
+# image = np.random.rand(256, 256) * 255  # Replace with actual image data
+
+# instead of a random image, we need to load the image from the dataset
+
+image = plt.imread('../images/jpgb.png')
+if image.shape[-1] == 4:  # Check if there's an alpha channel
+    image = image[..., :3]  # Keep only RGB channels
+
+
+grayscale_image = rgb2gray(image)[:824, :824]
+grayscale_image = (grayscale_image * 255).astype(np.uint8)
+
+dct_image = Dct_f.compute_dct_on_patches(grayscale_image)
+
 quantized_dct_image = Dct_f.quantize_dct_coefficients(dct_image)
 flat_quantized_data = flatten_quantized_data(quantized_dct_image)
 frequency = Counter(flat_quantized_data)
@@ -92,8 +106,7 @@ huffman_tree.build_tree(frequency)
 
 # 4. Encode the quantized data using Huffman codes
 encoded_data = huffman_tree.encode(flat_quantized_data)
-
-image_shape = image.shape
+image_shape = grayscale_image.shape
 
 
 # Usage Example:
