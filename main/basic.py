@@ -49,7 +49,7 @@ def load_compressed_image(filename):
         # Read metadata
         metadata = json.loads(file.readline().decode('utf-8'))
         # Read encoded data
-        print(metadata)
+        # print(metadata)
         encoded_data = pickle.load(file)
     
     # Reconstruct Huffman tree from saved codes
@@ -58,7 +58,7 @@ def load_compressed_image(filename):
     # print(huffman_tree.codes)
     
     # Decode the Huffman encoded data
-    decoded_quantized_data = np.array(huffman_tree.decode(encoded_data), dtype=np.int32)
+    decoded_flat_quantized_data = np.array(huffman_tree.decode(encoded_data), dtype=np.int32)
     
     # Reshape decoded data into patches and perform inverse DCT
     patch_size = metadata["patch_size"]
@@ -66,7 +66,7 @@ def load_compressed_image(filename):
     patches_shape = (image_shape[0] // patch_size[0], image_shape[1] // patch_size[1])
     # print(huffman_tree.decode(encoded_data))
     # print(encoded_data)
-    quantized_patches = decoded_quantized_data.reshape(patches_shape + tuple(patch_size))
+    quantized_patches = decoded_flat_quantized_data.reshape(patches_shape + tuple(patch_size))
   
     # Inverse DCT for each patch to reconstruct the image
     reconstructed_patches = np.array([idct(idct(patch.T, norm='ortho').T, norm='ortho') 
@@ -114,7 +114,7 @@ save_compressed_image("compressed_image.bin", encoded_data, image_shape, patch_s
 # Load and display the decompressed image
 reconstructed_image = load_compressed_image("compressed_image.bin")
 fig, axes = plt.subplots(1, 2, figsize=(12, 6))
-axes[0].imshow(image, cmap='gray')
+axes[0].imshow(grayscale_image, cmap='gray')
 axes[0].set_title('Original Image')
 axes[0].axis('off')
 
