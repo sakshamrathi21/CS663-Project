@@ -27,7 +27,7 @@ for image_path in image_paths:
     
     for quality in quality_factors:
         print("hello", image_path, quality)
-        grayscale_image = (rgb2gray(image)*255)[:824, :824]
+        grayscale_image = (rgb2gray(image)*255)
         # print(np.sum(grayscale_image))
         dct_image = dct2d(grayscale_image)
         # print("hello", quality)
