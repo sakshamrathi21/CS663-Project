@@ -6,7 +6,7 @@ import matplotlib.pyplot as plt
 import sys
 sys.path.append('..')
 from algorithms.huffman import HuffmanTree
-from algorithms.dct import Dct_f
+from algorithms.DCT import Dct_f
 from config.config import Config
 from collections import Counter
 
