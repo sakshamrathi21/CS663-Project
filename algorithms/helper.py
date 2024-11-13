@@ -5,7 +5,7 @@ import json
 import sys
 sys.path.append('..')
 from algorithms.huffman import HuffmanTree
-
+from config.config import Config
 
 def create_dct_matrix(n):
     matrix = np.zeros((n, n), dtype=np.float64)
@@ -44,7 +44,7 @@ def create_quantization_matrix(quality):
     quantization_matrix[quantization_matrix == 0] = 1
     return quantization_matrix
 
-def quantization(matrix, quality, inverse=False):
+def quantization(matrix, quality=Config.default_quality, inverse=False):
     q_matrix = create_quantization_matrix(quality)
     (height, width) = matrix.shape
     for y in range(0, height, 8):
@@ -81,7 +81,7 @@ def save_compressed_image(filename, quantized_data, image_shape, patch_size, huf
         pickle.dump(quantized_data, file)
 
 
-def load_compressed_image(filename, quality):
+def load_compressed_image(filename, quality=Config.default_quality):
     """
     Load and decompress the image data from a file.
     
