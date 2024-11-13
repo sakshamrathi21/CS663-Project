@@ -42,9 +42,9 @@ class HuffmanTree:
         self.tree = heap[0]
         
         # Generate codes for each symbol by traversing the tree
-        self._generate_codes(self.tree, "")
+        self._generate_codes(self.tree)
 
-    def _generate_codes(self, node, code):
+    def _generate_codes(self, node, code=""):
         # Recursively traverse the tree to generate codes
         if node is not None:
             if node.symbol is not None:

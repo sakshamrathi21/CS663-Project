@@ -6,7 +6,7 @@ import matplotlib.pyplot as plt
 import sys
 sys.path.append('..')
 from algorithms.huffman import HuffmanTree
-from algorithms.dct import Dct_f
+from algorithms.DCT import Dct_f
 from config.config import Config
 from collections import Counter
 from skimage.color import rgb2gray
@@ -75,7 +75,6 @@ def load_compressed_image(filename):
     
     return reconstructed_image
 
-
 def flatten_quantized_data(quantized_dct_patches):
     """
     Flatten the quantized DCT patches into a 1D list of values.
@@ -107,7 +106,6 @@ huffman_tree.build_tree(frequency)
 # 4. Encode the quantized data using Huffman codes
 encoded_data = huffman_tree.encode(flat_quantized_data)
 image_shape = grayscale_image.shape
-
 
 # Usage Example:
 # Assuming `encoded_data` is the Huffman encoded output and `image_shape` is the original image's shape
