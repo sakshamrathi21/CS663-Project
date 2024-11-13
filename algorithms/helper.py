@@ -99,7 +99,6 @@ def load_compressed_image(filename, quality=Config.default_quality):
     huffman_tree = HuffmanTree()
     huffman_tree.codes = metadata["huffman_codes"]
     
-    patch_size = metadata["patch_size"]
     image_shape = metadata["image_shape"]
     huffman_decoded_data = huffman_tree.decode(encoded_data)
     # Convert to floats, then round and cast to int32

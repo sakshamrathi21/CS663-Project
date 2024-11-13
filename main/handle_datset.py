@@ -22,17 +22,20 @@ for image_path in image_paths:
     image = plt.imread(image_path)
     if image.shape[-1] == 4:
         image = image[..., :3]
-    grayscale_image = rgb2gray(image) * 255
+    grayscale_image = rgb2gray(image)
     grayscale_image = grayscale_image[:824, :824]  # Crop if needed
+    grayscale_image = grayscale_image * 255
+    grayscale_image_copy = grayscale_image.copy()
     
     bpp_per_image = []
     rmse_per_image = []
     
+    print("hello", image_path)
+
     for quality in quality_factors:
-        print("hello", image_path, quality)
-        grayscale_image = (rgb2gray(image)*255)
+        grayscale_image = grayscale_image_copy.copy()
         # print(np.sum(grayscale_image))
-        dct_image = dct2d(grayscale_image)
+        dct_image = dct2d(grayscale_image.copy())
         # print("hello", quality)
         quality = int(quality)
         quantized_dct_image = quantization(dct_image, quality=quality)
@@ -47,15 +50,18 @@ for image_path in image_paths:
         encoded_data = huffman_tree.encode(flat_quantized_data)
         # print(frequency)
         # Save and load the compressed image
+
         save_compressed_image("compressed_image.bin", encoded_data, grayscale_image.shape, patch_size=(8, 8), huffman_tree=huffman_tree)
-        reconstructed_image = load_compressed_image("compressed_image.bin")
+        reconstructed_image = load_compressed_image("compressed_image.bin", quality=quality)
         
         # Calculate RMSE and BPP
         rmse = calculate_rmse(grayscale_image, reconstructed_image)
         bpp = calculate_bpp(encoded_data, grayscale_image.shape)
+
+        print(f"Quality: {quality}, RMSE: {rmse}, BPP: {bpp}")
         
         # bpp_per_image.append(bpp)
-        bpp_per_image.append(quality)
+        bpp_per_image.append(bpp)
         rmse_per_image.append(rmse)
     
     bpp_results.append(bpp_per_image)
