@@ -72,7 +72,6 @@ def load_compressed_image(filename):
     
     return reconstructed_image
 
-
 def flatten_quantized_data(quantized_dct_patches):
     """
     Flatten the quantized DCT patches into a 1D list of values.
@@ -94,7 +93,6 @@ huffman_tree.build_tree(frequency)
 encoded_data = huffman_tree.encode(flat_quantized_data)
 
 image_shape = image.shape
-
 
 # Usage Example:
 # Assuming `encoded_data` is the Huffman encoded output and `image_shape` is the original image's shape
