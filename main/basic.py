@@ -5,7 +5,7 @@ import sys
 sys.path.append('..')
 from algorithms.huffman import HuffmanTree
 from collections import Counter
-from algorithms.helper import dct2d, quantization, create_quantization_matrix, save_compressed_image, load_compressed_image
+from algorithms.helper import dct2d, quantization, save_compressed_image, load_compressed_image
 from config.config import Config
 
 config = Config()
