@@ -49,7 +49,7 @@ def load_compressed_image(filename):
         # Read metadata
         metadata = json.loads(file.readline().decode('utf-8'))
         # Read encoded data
-        # print(metadata)
+        print(metadata)
         encoded_data = pickle.load(file)
     
     # Reconstruct Huffman tree from saved codes
@@ -58,7 +58,7 @@ def load_compressed_image(filename):
     # print(huffman_tree.codes)
     
     # Decode the Huffman encoded data
-    decoded_flat_quantized_data = np.array(huffman_tree.decode(encoded_data), dtype=np.int32)
+    decoded_flat_quantized_data = np.array(huffman_tree.decode(encoded_data))
     
     # Reshape decoded data into patches and perform inverse DCT
     patch_size = metadata["patch_size"]
@@ -91,7 +91,7 @@ if image.shape[-1] == 4:  # Check if there's an alpha channel
 
 
 grayscale_image = rgb2gray(image)[:824, :824]
-grayscale_image = (grayscale_image * 255).astype(np.uint8)
+grayscale_image = grayscale_image * 255
 
 dct_image = Dct_f.compute_dct_on_patches(grayscale_image)
 
@@ -113,6 +113,7 @@ save_compressed_image("compressed_image.bin", encoded_data, image_shape, patch_s
 
 # Load and display the decompressed image
 reconstructed_image = load_compressed_image("compressed_image.bin")
+reconstructed_image = np.clip(reconstructed_image, 0, 255).astype(np.uint8)
 fig, axes = plt.subplots(1, 2, figsize=(12, 6))
 axes[0].imshow(grayscale_image, cmap='gray')
 axes[0].set_title('Original Image')
