@@ -6,6 +6,7 @@ import sys
 sys.path.append('..')
 from algorithms.huffman import HuffmanTree
 from config.config import Config
+from skimage.metrics import mean_squared_error
 
 def create_dct_matrix(n):
     matrix = np.zeros((n, n), dtype=np.float64)
@@ -40,6 +41,7 @@ def create_quantization_matrix(quality):
         [72, 92, 95, 98, 112, 100, 103, 99],
     ])
     scale = (5000 / quality) if quality < 50 else (200 - 2 * quality)
+    # print(quality, scale)
     quantization_matrix = np.floor((scale * base_matrix + 50) / 100).astype(np.int32)
     quantization_matrix[quantization_matrix == 0] = 1
     return quantization_matrix
@@ -110,3 +112,11 @@ def load_compressed_image(filename, quality=Config.default_quality):
     reconstructed_image = dct2d(reconstructed_dct_image, inverse=True)
     reconstructed_image = np.clip(reconstructed_image, 0, 255).astype(np.uint8)
     return reconstructed_image
+
+def calculate_bpp(encoded_data, image_shape):
+    total_bits = len(encoded_data) * Config.bits_per_symbol  # Assuming bits_per_symbol is defined
+    num_pixels = image_shape[0] * image_shape[1]
+    return total_bits / num_pixels
+
+def calculate_rmse(original, compressed):
+    return np.sqrt(mean_squared_error(original, compressed))
