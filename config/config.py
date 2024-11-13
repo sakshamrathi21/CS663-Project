@@ -15,3 +15,4 @@ class Config:
     quantization_matrix = np.floor((scale * base_matrix + 50) / 100).astype(np.int32)
     quantization_matrix[quantization_matrix == 0] = 1
     patch_size = (8, 8)
+    default_quality = 50
