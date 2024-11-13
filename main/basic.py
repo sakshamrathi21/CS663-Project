@@ -1,4 +1,3 @@
-import math
 import numpy as np
 from skimage.color import rgb2gray
 import matplotlib.pyplot as plt
