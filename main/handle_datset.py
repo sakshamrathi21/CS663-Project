@@ -8,10 +8,13 @@ from algorithms.huffman import HuffmanTree
 from collections import Counter
 from algorithms.helper import dct2d, quantization, save_compressed_image, load_compressed_image, calculate_rmse, calculate_bpp
 from config.config import Config
+import random
 
 config = Config()
-image_paths = glob.glob('../images/msrcorid/aeroplanes/general/*.JPG')[:config.basic_step_5_num_images]
-quality_factors = np.logspace(0, 2, 10)
+image_paths = glob.glob('../images/msrcorid/aeroplanes/general/*.JPG')
+num_random_images = config.basic_step_5_num_images
+image_paths = random.sample(image_paths, num_random_images)
+quality_factors = np.linspace(1, 100, 20)
 bpp_results = []
 rmse_results = []
 
@@ -54,12 +57,6 @@ for image_path in image_paths:
         # bpp_per_image.append(bpp)
         bpp_per_image.append(quality)
         rmse_per_image.append(rmse)
-        
-        # Delete the compressed image file and huffman tree
-        # del huffman_tree
-        # del reconstructed_image
-        # del encoded_data
-        # del frequency
     
     bpp_results.append(bpp_per_image)
     rmse_results.append(rmse_per_image)
