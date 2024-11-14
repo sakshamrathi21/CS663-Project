@@ -1,12 +1,7 @@
-import numpy as np
-import math
-import pickle
-import json
 import sys
 sys.path.append('..')
-from algorithms.huffman import HuffmanTree
+from include.common_imports import *
 from config.config import Config
-from skimage.metrics import mean_squared_error
 
 def create_dct_matrix(n):
     matrix = np.zeros((n, n), dtype=np.float64)
@@ -119,3 +114,30 @@ def calculate_bpp(encoded_data, image_shape):
 
 def calculate_rmse(original, compressed):
     return np.sqrt(mean_squared_error(original, compressed))
+
+def rmse_vs_bpp_plot(bpp_results, rmse_results, image_paths, plot_path):
+    plt.figure(figsize=(12, 8))
+    for i in range(len(image_paths)):
+        plt.plot(bpp_results[i], rmse_results[i], label=f'Image {i+1}')
+    plt.legend(loc="center left", bbox_to_anchor=(1, 0.5), title="Images")
+    plt.tight_layout()
+    plt.xlabel('BPP')
+    plt.ylabel('RMSE')
+    plt.title('RMSE vs. BPP for each image')
+    plt.legend()
+    plt.savefig(plot_path)
+
+def get_image_paths():
+    image_paths = glob.glob(Config.dataset_path)
+    num_random_images = Config.basic_step_5_num_images
+    image_paths = random.sample(image_paths, num_random_images)
+    return image_paths
+
+def get_gray_scale_image(image_path):
+    image = plt.imread(image_path)
+    if image.shape[-1] == 4:
+        image = image[..., :3]
+    grayscale_image = rgb2gray(image)
+    grayscale_image = grayscale_image[:824, :824]  # Crop if needed
+    grayscale_image = grayscale_image * 255
+    return grayscale_image
