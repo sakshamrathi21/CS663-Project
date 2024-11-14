@@ -66,10 +66,25 @@ class HuffmanTree:
         # We need to populate reverse_codes too:
         for key, value in self.codes.items():
             self.reverse_codes[value] = key
+        # print("hello", self.reverse_codes)
         for bit in encoded_data:
             current_code += bit
             if current_code in self.reverse_codes:
                 decoded_data.append(self.reverse_codes[current_code])
                 current_code = ""
-        
+        # print("decoded_data", decoded_data)
         return decoded_data
+    
+    def rl_decode(self, encoded_data):
+        decoded_data = []
+        current_code = ""
+        for bit in encoded_data:
+            current_code += bit
+            if current_code in self.reverse_codes:
+                symbol = self.reverse_codes[current_code]
+                # Convert the 'value,count' string back into a tuple
+                value, count = map(int, symbol.split(','))
+                decoded_data.append((value, count))
+                current_code = ""
+        return decoded_data
+
