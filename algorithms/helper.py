@@ -1,7 +1,6 @@
 import sys
 sys.path.append('..')
 from include.common_imports import *
-from config.config import Config
 
 def create_dct_matrix(n):
     matrix = np.zeros((n, n), dtype=np.float64)

@@ -1,5 +1,6 @@
-import heapq
-from collections import defaultdict
+import sys
+sys.path.append('..')
+from include.common_imports import *
 
 class HuffmanTree:
     def __init__(self):

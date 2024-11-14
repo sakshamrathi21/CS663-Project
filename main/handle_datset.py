@@ -2,7 +2,6 @@ import sys
 sys.path.append('..')
 from include.common_imports import *
 from algorithms.helper import *
-from config.config import Config
 
 config = Config()
 image_paths = get_image_paths()
