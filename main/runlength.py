@@ -24,6 +24,7 @@ for image_path in image_paths:
         if len(frequency) == 1:
             continue
         huffman_tree.build_tree(frequency)
+        
         encoded_data = huffman_tree.encode(encoded_data)
         save_compressed_image("compressed_image.bin", encoded_data, grayscale_image.shape, patch_size=Config.patch_size, huffman_tree=huffman_tree)
         reconstructed_image = load_compressed_image_runlength("compressed_image.bin", quality=quality)

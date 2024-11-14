@@ -170,7 +170,6 @@ def get_zigzag_order(block_size):
 # Perform runlength encoding for a channel
 def runlength_encode(channel):
     zigzag_order = get_zigzag_order(8)
-
     (height, width) = channel.shape
     pairs = []
 
@@ -188,12 +187,11 @@ def runlength_encode(channel):
                     skip = 0
 
             pairs.append([0, 0])
-
     return np.array(pairs, dtype=np.int16).flatten()
 
 # Decode the runlength pairs and reconstruct the original channel
 def runlength_decode(height, width, pairs):
-    print(pairs)
+    # print(pairs)
     pairs = pairs.reshape((-1, 2))
     zigzag_order = get_zigzag_order(8)
     matrix = np.zeros((height, width))
@@ -238,10 +236,9 @@ def load_compressed_image_runlength(filename, quality=Config.default_quality):
     
     huffman_tree = HuffmanTree()
     huffman_tree.codes = metadata["huffman_codes"]
-    
-    print("saksham", huffman_tree.rl_decode(encoded_data))
     huffman_decoded_data = huffman_tree.decode(encoded_data)
-    print(metadata["image_shape"])
+    print(huffman_decoded_data)
+    huffman_decoded_data = np.array(huffman_decoded_data, dtype=np.int16)
     decoded_flat_quantized_data = runlength_decode(metadata["image_shape"][0], metadata["image_shape"][1], huffman_decoded_data)
     # Apply Run-Length Decoding
     # decoded_flat_quantized_data = run_length_decoding(huffman_decoded_data)
