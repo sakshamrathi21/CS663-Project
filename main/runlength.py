@@ -36,4 +36,4 @@ for image_path in image_paths:
     bpp_results.append(bpp_per_image)
     rmse_results.append(rmse_per_image)
 
-rmse_vs_bpp_plot(bpp_results, rmse_results, image_paths, plot_path='../results/basic.png')
+rmse_vs_bpp_plot(bpp_results, rmse_results, image_paths, plot_path='../results/runlength.png')
