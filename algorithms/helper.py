@@ -237,23 +237,25 @@ def load_compressed_image_runlength(filename, quality=Config.default_quality):
     huffman_tree = HuffmanTree()
     huffman_tree.codes = metadata["huffman_codes"]
     huffman_decoded_data = huffman_tree.decode(encoded_data)
-    print(huffman_decoded_data)
+    # print(huffman_decoded_data)
     huffman_decoded_data = np.array(huffman_decoded_data, dtype=np.int16)
     decoded_flat_quantized_data = runlength_decode(metadata["image_shape"][0], metadata["image_shape"][1], huffman_decoded_data)
+    # print(decoded_flat_quantized_data)
     # Apply Run-Length Decoding
     # decoded_flat_quantized_data = run_length_decoding(huffman_decoded_data)
     # Convert to array and reshape into 8x8 blocks using inverse zigzag
     image_shape = metadata["image_shape"]
-    quantized_dct_image = np.zeros(image_shape, dtype=int)
+    # quantized_dct_image = np.zeros(image_shape, dtype=int)
     
-    block_index = 0
-    for i in range(image_shape[0] // 8):
-        for j in range(image_shape[1] // 8):
-            flat_block = decoded_flat_quantized_data[block_index * 64 : (block_index + 1) * 64]
-            quantized_dct_image[i*8:(i+1)*8, j*8:(j+1)*8] = inverse_zigzag_scan(flat_block)
-            block_index += 1
+    # block_index = 0
+    # for i in range(image_shape[0] // 8):
+    #     for j in range(image_shape[1] // 8):
+    #         flat_block = decoded_flat_quantized_data[block_index * 64 : (block_index + 1) * 64]
+    #         quantized_dct_image[i*8:(i+1)*8, j*8:(j+1)*8] = inverse_zigzag_scan(flat_block)
+    #         block_index += 1
 
     # Inverse quantization and inverse DCT
+    quantized_dct_image = decoded_flat_quantized_data.reshape(image_shape)
     reconstructed_dct_image = quantization(quantized_dct_image, quality, inverse=True)
     reconstructed_image = dct2d(reconstructed_dct_image, inverse=True)
     reconstructed_image = np.clip(reconstructed_image, 0, 255).astype(np.uint8)
