@@ -5,7 +5,9 @@ from algorithms.helper import *
 
 config = Config()
 image_paths = get_image_paths()
+# image_paths = ['../images/jpgb.png']
 quality_factors = Config.quality_factors
+# quality_factors = [2, 10, 50, 80]
 bpp_results = []
 rmse_results = []
 
@@ -28,6 +30,11 @@ for image_path in image_paths:
         save_compressed_image("compressed_image.bin", encoded_data, grayscale_image.shape, patch_size=Config.patch_size, huffman_tree=huffman_tree)
         reconstructed_image = load_compressed_image("compressed_image.bin", quality=quality)
         rmse = calculate_rmse(grayscale_image, reconstructed_image)
+        # I want to show the reconstructed and the grayscale image side by side
+        # I will use the following code to do that
+        show_images_side_by_side(reconstructed_image, grayscale_image, title=f"../results/Quality: {quality}_comparison.png")
+        # exit()
+
         bpp = calculate_bpp(encoded_data, grayscale_image.shape)
         print(f"Quality: {quality}, RMSE: {rmse}, BPP: {bpp}")
         bpp_per_image.append(bpp)

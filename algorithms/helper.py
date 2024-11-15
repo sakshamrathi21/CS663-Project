@@ -261,3 +261,12 @@ def load_compressed_image_runlength(filename, quality=Config.default_quality):
     reconstructed_image = np.clip(reconstructed_image, 0, 255).astype(np.uint8)
     
     return reconstructed_image
+
+def show_images_side_by_side(reconstructed_image, grayscale_image, title="Reconstructed vs. Grayscale Image"):
+    fig, ax = plt.subplots(1, 2)
+    ax[0].imshow(reconstructed_image, cmap='gray')
+    ax[0].set_title('Reconstructed Image')
+    ax[1].imshow(grayscale_image, cmap='gray')
+    ax[1].set_title('Grayscale Image')
+    # plt.show()
+    plt.savefig(title)

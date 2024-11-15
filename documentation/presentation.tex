@@ -78,81 +78,123 @@
 
 
 % Introduction
-\section[Introduction]{Introduction}
+\section[Problem Statement]{Problem Statement}
+% 
+% \setbeamercolor{background canvas}{use=structure,bg=white}
+% \setbeamercolor{background}{use=structure,bg=white}
+\begin{frame}{Problem Statement}
+	The problem statement of this project has been taken from the following website:
+	\begin{center}
+		\href{https://www.cse.iitb.ac.in/~ajitvr/CS663_Fall2024/project.html}{\textcolor{blue}{\underline{CS663: Digital Image Processing}}}
+	\end{center}
 
-\setbeamercolor{background canvas}{use=structure,bg=white}
-\setbeamercolor{background}{use=structure,bg=white}
-\begin{frame}{Blocks}
-    \begin{alertblock}{Alert Block}
-        Some Text Here 
-    \end{alertblock}
-    \begin{exampleblock} {Example Block}
-        Some Text Here
-    \end{exampleblock}
-    \begin{block}{ Block}
-        Some Text Here
-    \end{block}
+	We have built an image compression engine along the lines of the JPEG algorithm. Along with this, we have implemented PCA algorithm. We have also thoroughly studied a tier-1 conference paper {\bf Approximation and Compression With Sparse Orthonormal Transforms} and implemented the algorithm proposed in the paper.
+	\vspace{1cm}
+
+	All the algorithms were tested on a variety of image datasets. The results were compared and analyzed to understand the performance of the algorithms.
 \end{frame}
 
-
-
-\section[Literature]{Literature}
+\section{Basic Implementation}
 \begin{frame}
-	\frametitle{Literature}
-	\transfly
+	\frametitle{Basic Implementation}
+	Here are the steps which were performed as part of the basic implementation:
 	\begin{itemize}
-		\item Paper 1 ~\citep{Corbett18,Kochling20,Silva19}
-		\item Paper2~\citep{Cowgill20}
-		\pause
-		\item Paper3~\citep{Lambrecht19}
-		\begin{itemize}
-			\item Legal restrictions create an uneven burden on advertisers and platforms~\citep{Yuan23}
-		\end{itemize}
-		\pause
-		\item Paper3~\citep{Fu22}
+		\item Computation of the 2D DCT coefficients of non-overlapping image patches
+		\item Implementation of the quantization step
+		\item Implementation of the Huffman tree
+		\item Writing data to appropriate file format and plotting RMSE vs BPP
 	\end{itemize}
-	\pause
-	\begin{exampleblock}{We explain why...}
-		Some Text Here 
-	\end{exampleblock}
+	Here is the expression of RMSE:
+	\begin{equation}
+		\text{RMSE} = \sqrt{\frac{1}{N} \sum_{i=1}^{N}\sum_{j=1}^{M} (I_{\text{orig}}(i)(j) - I_{\text{recon}}(i)(j))^2}
+	\end{equation}
+	where $I_{\text{orig}}$ is the original image and $I_{\text{recon}}$ is the reconstructed image. BPP stands for the size of the image in bits divided by the number of pixels.
 \end{frame}
-
-
-\section[Model Prelim.]{Model Preliminaries}
-\begin{frame}{Model}
-	Some Text Here 
-\end{frame}
-
-
-\section[Results]{Results}
 \begin{frame}
-	\frametitle{Some Results}
+	\frametitle{Quality Comparison}
+	Here is the comparison of the reconstucted and the original image for a quality factor of 2:
+	\begin{figure}
+		\centering
+		\includegraphics[width=0.7\textwidth]{../results/Quality: 2_comparison.png}
+		\caption{Original and Reconstructed Image}
+	\end{figure}
 \end{frame}
-
-
-\section[Conclusion]{Conclusion}
-
-
-\section[Potential Future Extensions]{Potential Future Extensions}
-
 
 \begin{frame}
-	\transglitter<1>
-	\frametitle{Once Again...}
-	%\pause
-	\begin{block}{Really appreciate your comments}
-		\begin{center} \alert{\Huge\bf THANK YOU!} \end{center}
-	\end{block}
+	\frametitle{Quality Comparison}
+	Here is the comparison of the reconstucted and the original image for a quality factor of 10:
+	\begin{figure}
+		\centering
+		\includegraphics[width=0.7\textwidth]{../results/Quality: 10_comparison.png}
+		\caption{Original and Reconstructed Image}
+	\end{figure}
 \end{frame}
 
-\appendix
-\frame[allowframebreaks]
-{
+\begin{frame}
+	\frametitle{Quality Comparison}
+	Here is the comparison of the reconstucted and the original image for a quality factor of 50:
+	\begin{figure}
+		\centering
+		\includegraphics[width=0.7\textwidth]{../results/Quality: 50_comparison.png}
+		\caption{Original and Reconstructed Image}
+	\end{figure}
+\end{frame}
+
+\begin{frame}
+	\frametitle{Quality Comparison}
+	Here is the comparison of the reconstucted and the original image for a quality factor of 80:
+	\begin{figure}
+		\centering
+		\includegraphics[width=0.7\textwidth]{../results/Quality: 80_comparison.png}
+		\caption{Original and Reconstructed Image}
+	\end{figure}
+\end{frame}
+
+\begin{frame}
+	\frametitle{RMSE vs BPP}
+	For the basic implementation, we have used the dataset from the miscellaneous category of the msrcorid dataset. We picked random 20 images and used 20 quality factors (in the range of 1 to 100) to plot the RMSE vs BPP graph. Here is the graph:
+
+	\begin{figure}
+		\centering
+		\includegraphics[width=0.7\textwidth]{../results/basic.png}
+		\caption{RMSE vs BPP}
+	\end{figure}
+	
+\end{frame}
+
+
+
+
+
+\section{Individual Contributions}
+
+\begin{frame}
+	\frametitle{Individual Contributions}
+	\begin{alertblock}{Saksham Rathi}
+	\end{alertblock}
+	\begin{alertblock}{Kavya Gupta}
+	\end{alertblock}
+	\begin{alertblock}{Shravan Srinivasa Raghavan}
+	\end{alertblock}
+
+\end{frame}
+\section{Conclusion}
+\begin{frame}
+	\frametitle{Conclusion}
+\end{frame}
+
+\section{References}
+
+\begin{frame}
 	\frametitle{References}
-	\scriptsize
-	\bibliographystyle{ref}
-	\bibliography{ref}
-}
+	\begin{itemize}
+		\item \href{https://docs.google.com/presentation/d/1-8xCg7o8Vtc9ghJf6y1Nkq9-TV0qSNfX/edit?usp=sharing&ouid=115909013767952805958&rtpof=true&sd=true}{\textcolor{blue}{\underline{CS663: Image Compression Slides}}}
+		\item Course Textbook: ``Digital Image Processing'' by Rafael C. Gonzalez and Richard Woods, 3rd edition
+		\item Osman Gokhan Sezer, Onur G. Guleryuz and Yucel Altunbasak, "Approximation and Compression With Sparse Orthonormal Transforms", IEEE Transactions on Image Processing, 2015
+		\item \href{https://github.com/jeremyfell/image-compression/blob/master/image-compression.py}{\textcolor{blue}{\underline{Sample Image Compression Code}}}
+		\item 
+	\end{itemize}
+\end{frame}
 
 \end{document}
 
