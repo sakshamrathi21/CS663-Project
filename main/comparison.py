@@ -32,7 +32,7 @@ for image_path in image_paths:
         rmse = calculate_rmse(grayscale_image, reconstructed_image)
         # I want to show the reconstructed and the grayscale image side by side
         # I will use the following code to do that
-        show_images_side_by_side(reconstructed_image, grayscale_image, title=f"../results/Quality: {quality}_comparison.png")
+        # show_images_side_by_side(reconstructed_image, grayscale_image, title=f"../results/Quality: {quality}_comparison.png")
         # exit()
 
         bpp = calculate_bpp(encoded_data, grayscale_image.shape)
@@ -78,18 +78,26 @@ for image_path in image_paths:
 # We can also compare the results of both algorithms on the same plot using matplotlib:
 
 plt.figure(figsize=(12, 8))
+
+plt.figure(figsize=(12, 8))
+
 for i in range(len(image_paths)):
+    # Plot Basic algorithm results
     plt.plot(bpp_results[i], rmse_results[i], label=f'Basic')
+    plt.scatter(bpp_results[i], rmse_results[i], color='blue', s=40, edgecolor='black')  # Add circles
+    for x, y in zip(bpp_results[i], rmse_results[i]):
+        plt.text(x, y, f'({x:.2f}, {y:.2f})', fontsize=8, ha='left', va='bottom')
+
+    # Plot Runlength algorithm results
     plt.plot(bpp_results2[i], rmse_results2[i], label=f'Runlength')
+    plt.scatter(bpp_results2[i], rmse_results2[i], color='orange', s=40, edgecolor='black')  # Add circles
+    for x, y in zip(bpp_results2[i], rmse_results2[i]):
+        plt.text(x, y, f'({x:.2f}, {y:.2f})', fontsize=8, ha='left', va='bottom')
+
 plt.legend(loc="center left", bbox_to_anchor=(1, 0.5), title="Images")
 plt.tight_layout()
 plt.xlabel('BPP')
 plt.ylabel('RMSE')
 plt.title('RMSE vs. BPP comparison between Basic and Runlength algorithms')
-plt.legend()
 plt.savefig('../results/comparison.png')
 plt.close()
-
-
-
-# rmse_vs_bpp_plot(bpp_results, rmse_results, image_paths, plot_path='../results/runlength.png')
