@@ -54,7 +54,7 @@
 % Title
 \usebeamercolor[fg]{author in sidebar}
 \title[{Image Compression}]{\sc Image Compression Project}
-\author[\ul{Authors}]{{\bf Saksham Rathi, Kavya Gupta, Shravan Srinivasa Raghavan}}
+\author[\ul{Authors}]{{\bf Saksham Rathi, Kavya Gupta, Shravan Srinivasa Raghavan}\\ \hspace{-1cm} (22B1003) \hspace{0.7cm} (22B1053) \hspace{1.7cm} (22B1054)}
 \institute[UTD]{\sc\small CS663: Digital Image Processing\\ Under Prof. Ajit Rajwade}
 \date[UCI]{Indian Institute of Technology Bombay \\ Autumn 2024}
 %
@@ -162,6 +162,37 @@
 	
 \end{frame}
 
+\section{Run Length Encoding}
+
+\begin{frame}
+	\frametitle{Run Length Encoding}
+	The quantized DCT coefficients are arranged in a zigzag order. This pattern leaves a bunch of consecutive zeros at the end.
+
+	\vspace{1cm}
+
+	In runlength encoding, we replace the consecutive zeros with a pair of numbers: the number of zeros and the value of the next non-zero element. This reduces the size of the data to be stored.
+\end{frame}
+
+\begin{frame}{RMSE vs BPP}
+	The dataset of images from the miscellaneous category of the msrcorid dataset was used to plot the RMSE vs BPP graph. Here is the graph:
+
+	\begin{figure}
+		\centering
+		\includegraphics[width=0.7\textwidth]{../results/runlength.png}
+		\caption{RMSE vs BPP}
+	\end{figure}
+
+\end{frame}
+
+\begin{frame}
+	\frametitle{Comparison of Basic and Run Length Encoding}
+
+	\begin{figure}
+		\centering
+		\includegraphics[width=0.7\textwidth]{../results/comparison.png}
+		\caption{Comparison of Basic and Run Length Encoding}
+	\end{figure}
+\end{frame}
 
 
 

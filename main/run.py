@@ -19,6 +19,8 @@ if __name__ == "__main__":
         run_file("basic.py")
     elif file_number == "runlength":
         run_file("runlength.py")
+    elif file_number == "comparison":
+        run_file("comparison.py")
     else:
         print("Invalid argument. Use 1 or 2.")
         sys.exit(1)
