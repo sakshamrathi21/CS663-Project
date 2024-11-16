@@ -1,5 +1,11 @@
 import sys
 import subprocess
+import sys
+sys.path.append('..')
+import runlength, comparison, basic
+from algorithms.helper import *
+
+
 
 def run_file(filename):
     try:
@@ -9,18 +15,17 @@ def run_file(filename):
         sys.exit(1)
 
 if __name__ == "__main__":
-    if len(sys.argv) != 2:
-        print("Usage: python3 run.py <file_number>")
-        sys.exit(1)
-
-    file_number = sys.argv[1]
-
-    if file_number == "basic":
-        run_file("basic.py")
-    elif file_number == "runlength":
-        run_file("runlength.py")
-    elif file_number == "comparison":
-        run_file("comparison.py")
-    else:
-        print("Invalid argument. Use 1 or 2.")
-        sys.exit(1)
+    if len(sys.argv) < 2:
+        print("Usage: python3 run.py <file_names>")
+    if len(sys.argv) == 2:
+        file_number = sys.argv[1]
+        if file_number == "basic":
+            bpp_results, rmse_results = basic.basic()
+            rmse_vs_bpp_plot(bpp_results, rmse_results, get_image_paths(), plot_path='../results/basic.png')
+        elif file_number == "runlength":
+            bpp_results, rmse_results = runlength.runlength()
+            rmse_vs_bpp_plot(bpp_results, rmse_results, get_image_paths(), plot_path='../results/runlength.png')
+        elif file_number == "jpeg":
+            run_file("actual_jpeg.py")
+        else:
+            print("Invalid file name")
