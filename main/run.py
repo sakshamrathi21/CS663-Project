@@ -1,20 +1,13 @@
 import sys
 import subprocess
+import runlength, basic, actual_jpeg, runlength
 import sys
 sys.path.append('..')
-import runlength, comparison, basic, actual_jpeg
+
 from algorithms.helper import *
 
-
-
-def run_file(filename):
-    try:
-        subprocess.run(["python3", filename], check=True)
-    except subprocess.CalledProcessError as e:
-        print(f"Error running {filename}: {e}")
-        sys.exit(1)
-
 if __name__ == "__main__":
+    # print("check")
     if len(sys.argv) < 2:
         print("Usage: python3 run.py <file_names>")
     if len(sys.argv) == 2:
@@ -26,6 +19,7 @@ if __name__ == "__main__":
             bpp_results, rmse_results = runlength.runlength()
             rmse_vs_bpp_plot(bpp_results, rmse_results, get_image_paths(), plot_path='../results/runlength.png')
         elif file_number == "jpeg":
+            # print("hello")
             bpp_results, rmse_results = actual_jpeg.jpeg()
             rmse_vs_bpp_plot(bpp_results, rmse_results, get_image_paths(), plot_path='../results/jpeg.png')
         else:
