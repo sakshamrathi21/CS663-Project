@@ -9,7 +9,7 @@ def jpeg():
     quality_factors = Config.quality_factors
     bpp_results = []
     rmse_results = []
-
+    # print(image_paths)
     for image_path in image_paths:
         # grayscale_image_copy = get_gray_scale_image(image_path)
         grayscale_image_copy = convert_to_grayscale_bmp(image_path)

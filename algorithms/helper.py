@@ -300,9 +300,12 @@ def apply_jpeg_compression(np_array, save_path, quality=50):
     Returns:
         np.ndarray: NumPy array of the compressed image.
     """
+    if quality < 1 or quality > 100:
+        raise ValueError(f"Quality value must be between 1 and 100. Got {quality}.")
     # Convert NumPy array to PIL Image
     image = Image.fromarray(np_array.astype(np.uint8), mode='L')  # 'L' for grayscale
-    
+    # print(quality, "hello")
+    quality = int(quality)
     # Save the image in JPEG format with specified quality
     image.save(save_path, "JPEG", quality=quality)
     
