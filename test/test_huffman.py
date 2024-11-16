@@ -1,4 +1,6 @@
 # Test huffman code on an image
+import sys
+sys.path.append('..')
 from algorithms.huffman import HuffmanTree
 import matplotlib.pyplot as plt
 from skimage.color import rgb2gray
