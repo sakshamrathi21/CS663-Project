@@ -3,9 +3,9 @@ sys.path.append('..')
 from include.common_imports import *
 from algorithms.helper import *
 
-def jpeg():
+def jpeg(num_paths=20):
     config = Config()
-    image_paths = get_image_paths()
+    image_paths = get_image_paths()[0:num_paths]
     quality_factors = Config.quality_factors
     bpp_results = []
     rmse_results = []

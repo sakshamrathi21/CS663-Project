@@ -3,9 +3,9 @@ sys.path.append('..')
 from include.common_imports import *
 from algorithms.helper import *
 
-def runlength():
+def runlength(num_paths=20):
     config = Config()
-    image_paths = get_image_paths()
+    image_paths = get_image_paths()[0:num_paths]
     quality_factors = Config.quality_factors
     bpp_results = []
     rmse_results = []
@@ -13,12 +13,11 @@ def runlength():
     for image_path in image_paths:
         # grayscale_image_copy = get_gray_scale_image(image_path)
         grayscale_image_copy = convert_to_grayscale_bmp(image_path)
-        dct_image = dct2d(grayscale_image.copy())
         bpp_per_image = []
         rmse_per_image = []
         for quality in quality_factors:
             grayscale_image = grayscale_image_copy.copy()
-            dct_image = dct_image.copy()
+            dct_image = dct2d(grayscale_image.copy())
             quality = int(quality)
             quantized_dct_image = quantization(dct_image, quality=quality)
             huffman_tree = HuffmanTree()
