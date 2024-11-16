@@ -3,11 +3,6 @@ import subprocess
 import runlength, basic, actual_jpeg, runlength
 import sys
 sys.path.append('..')
-<<<<<<< HEAD
-import runlength, basic, actual_jpeg
-=======
-
->>>>>>> e71d7d1d76d2e9520de6916e3f299d47b185f7a2
 from algorithms.helper import *
 
 if __name__ == "__main__":
