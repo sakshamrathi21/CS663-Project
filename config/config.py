@@ -6,3 +6,4 @@ class Config:
     basic_step_5_num_images = 20
     dataset_path = '../images/msrcorid/miscellaneous/*.JPG'
     quality_factors = np.linspace(1, 100, 20)
+    # quality_factors = [1, 2, 10, 50, 80]

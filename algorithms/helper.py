@@ -270,3 +270,20 @@ def show_images_side_by_side(reconstructed_image, grayscale_image, title="Recons
     ax[1].set_title('Grayscale Image')
     # plt.show()
     plt.savefig(title)
+
+def convert_to_grayscale_bmp(image_path):
+    # Open the image file
+    with Image.open(image_path) as img:
+        # Convert the image to grayscale
+        grayscale_img = img.convert("L")
+        # Create an in-memory file
+        bmp_buffer = io.BytesIO()
+        # Save the grayscale image as BMP in the buffer
+        grayscale_img.save(bmp_buffer, format="BMP")
+        # Move the cursor to the beginning of the buffer
+        bmp_buffer.seek(0)
+        # Convert the grayscale image to a NumPy array
+        np_array = np.array(grayscale_img)
+    return np_array
+
+

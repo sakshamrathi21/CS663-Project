@@ -11,6 +11,8 @@ from skimage.metrics import mean_squared_error
 from config.config import Config
 import heapq
 from collections import defaultdict
+from PIL import Image
+import io
 import sys
 sys.path.append('..')
 from algorithms.huffman import HuffmanTree

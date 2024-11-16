@@ -12,7 +12,7 @@ bpp_results = []
 rmse_results = []
 
 for image_path in image_paths:
-    grayscale_image_copy = get_gray_scale_image(image_path)
+    grayscale_image_copy = convert_to_grayscale_bmp(image_path)
     bpp_per_image = []
     rmse_per_image = []
     for quality in quality_factors:
@@ -48,7 +48,7 @@ bpp_results2 = []
 rmse_results2 = []
 
 for image_path in image_paths:
-    grayscale_image_copy = get_gray_scale_image(image_path)
+    grayscale_image_copy = convert_to_grayscale_bmp(image_path)
     bpp_per_image = []
     rmse_per_image = []
     for quality in quality_factors:
