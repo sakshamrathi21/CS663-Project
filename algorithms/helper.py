@@ -287,3 +287,25 @@ def convert_to_grayscale_bmp(image_path):
     return np_array
 
 
+def apply_jpeg_compression(np_array, save_path, quality=50):
+    """
+    Apply JPEG compression to a NumPy array and save the compressed image.
+
+    Args:
+        np_array (np.ndarray): Grayscale image as a NumPy array.
+        save_path (str): Path to save the compressed JPEG image.
+        quality (int): Compression quality (1-95, higher is better quality).
+    
+    Returns:
+        np.ndarray: NumPy array of the compressed image.
+    """
+    # Convert NumPy array to PIL Image
+    image = Image.fromarray(np_array.astype(np.uint8), mode='L')  # 'L' for grayscale
+    
+    # Save the image in JPEG format with specified quality
+    image.save(save_path, "JPEG", quality=quality)
+    
+    # Reload the compressed image as a NumPy array
+    compressed_image = Image.open(save_path).convert('L')
+    return np.array(compressed_image)
+
