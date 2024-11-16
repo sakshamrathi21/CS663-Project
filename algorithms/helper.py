@@ -270,6 +270,7 @@ def show_images_side_by_side(reconstructed_image, grayscale_image, title="Recons
     ax[1].set_title('Grayscale Image')
     # plt.show()
     plt.savefig(title)
+    plt.close()
 
 def convert_to_grayscale_bmp(image_path):
     # Open the image file
@@ -283,7 +284,7 @@ def convert_to_grayscale_bmp(image_path):
         # Move the cursor to the beginning of the buffer
         bmp_buffer.seek(0)
         # Convert the grayscale image to a NumPy array
-        np_array = np.array(grayscale_img)
+        np_array = np.array(grayscale_img, dtype=np.float64)
     return np_array
 
 
@@ -309,3 +310,8 @@ def apply_jpeg_compression(np_array, save_path, quality=50):
     compressed_image = Image.open(save_path).convert('L')
     return np.array(compressed_image)
 
+def show_image(image, title, cmap='gray'):
+    plt.imshow(image, cmap=cmap)
+    plt.title(title)
+    plt.axis('off')
+    plt.show()

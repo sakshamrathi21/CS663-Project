@@ -2,17 +2,8 @@ import sys
 import subprocess
 import sys
 sys.path.append('..')
-import runlength, comparison, basic, actual_jpeg
+import runlength, basic, actual_jpeg
 from algorithms.helper import *
-
-
-
-def run_file(filename):
-    try:
-        subprocess.run(["python3", filename], check=True)
-    except subprocess.CalledProcessError as e:
-        print(f"Error running {filename}: {e}")
-        sys.exit(1)
 
 if __name__ == "__main__":
     if len(sys.argv) < 2:
