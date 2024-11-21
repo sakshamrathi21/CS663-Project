@@ -2,6 +2,23 @@ import sys
 sys.path.append('..')
 from include.common_imports import *
 
+def pad_image(image, patch_size=8):
+    """
+    Pads the image so that its dimensions are divisible by patch_size.
+    """
+    h, w = image.shape
+    pad_h = (patch_size - h % patch_size) % patch_size
+    pad_w = (patch_size - w % patch_size) % patch_size
+    padded_image = np.pad(image, ((0, pad_h), (0, pad_w)), mode='constant', constant_values=0)
+    return padded_image
+
+def extract_patches(image, patch_size=8):
+    """
+    Extracts non-overlapping patches from an image.
+    """
+    patches = view_as_windows(image, (patch_size, patch_size), step=patch_size)
+    return patches.reshape(-1, patch_size, patch_size)
+
 def create_dct_matrix(n):
     matrix = np.zeros((n, n), dtype=np.float64)
     for i in range(n):
@@ -52,6 +69,30 @@ def quantization(matrix, quality=Config.default_quality, inverse=False):
                 matrix[y:y+8, x:x+8] = np.round(block / q_matrix)
     return matrix
 
+# TODO
+def save_compressed_patches(filename,compressedPatches,image_shape,patch_size,pca_model):
+    """
+    Save the compressed image data to a file.
+    
+    Parameters:
+    - filename: Name of the file to save data.
+    - quantized_data: Huffman-encoded data for DCT coefficients.
+    - image_shape: Shape of the original image.
+    - patch_size: Size of the patches (e.g., (8, 8)).
+    - huffman_tree: Huffman tree used for encoding (stores codes and symbols).
+    """
+    # Prepare data for saving
+    metadata = {
+        "image_shape": image_shape,
+        "patch_size": patch_size,
+        "pca_model": pca_model  # Save the pca model codes for restoring
+    }
+    with open(filename, 'wb') as file:
+        # Save metadata as JSON for easy parsing
+        file.write(json.dumps(metadata).encode('utf-8') + b'\n')
+        # Save the Huffman encoded data as binary
+        pickle.dump(compressedPatches, file)
+
 def save_compressed_image(filename, quantized_data, image_shape, patch_size, huffman_tree):
     """
     Save the compressed image data to a file.
@@ -83,7 +124,42 @@ def save_compressed_image(filename, quantized_data, image_shape, patch_size, huf
         # Save the Huffman encoded data as binary
         pickle.dump(quantized_data, file)
 
-
+def reconstruct_image(patches, image_shape, patch_size):
+    """
+    Reconstruct the full image from the patches.
+    """
+    h, w = image_shape
+    reconstructed = np.zeros((h, w))
+    patch_idx = 0
+    for i in range(0, h, patch_size):
+        for j in range(0, w, patch_size):
+            if patch_idx < patches.shape[0]:
+                    size_x = patch_size if i + patch_size <= h else h - i
+                    size_y = patch_size if j + patch_size <= w else w - j
+                    reconstructed[i:i + size_x, j:j + size_y] = patches[patch_idx][:size_x, :size_y]
+                    patch_idx += 1
+    return reconstructed
+# TODO
+def load_compressed_patches(filename,components = Config.default_components):
+    """
+    Load and decompress the image data from a file.
+    
+    Parameters:
+    - filename: Name of the file to load data.
+    
+    Returns:
+    - Reconstructed image from the compressed data.
+    """
+    with open(filename, 'rb') as file:
+        metadata = json.loads(file.readline().decode('utf-8'))
+        compressedPatches = pickle.load(file)
+    P = metadata["pca_model"]
+    image_shape = metadata["image_shape"]
+    patch_size = metadata["patch_size"]
+    decompressedPatches = (P.inverse_transform(compressedPatches)).reshape((compressedPatches.shape[0],patch_size,patch_size))
+    reconstructed_image = reconstruct_image(decompressedPatches,image_shape,patch_size)
+    return reconstruct_image
+    
 def load_compressed_image(filename, quality=Config.default_quality):
     """
     Load and decompress the image data from a file.
