@@ -20,6 +20,7 @@ from skimage import color
 from mpl_toolkits.mplot3d import Axes3D
 from scipy.ndimage import gaussian_laplace
 from scipy.interpolate import griddata
+from skimage.util import view_as_windows
 import io
 import sys
 sys.path.append('..')
