@@ -70,27 +70,30 @@ def quantization(matrix, quality=Config.default_quality, inverse=False):
     return matrix
 
 # TODO
-def save_compressed_patches(filename,compressedPatches,image_shape,patch_size,pca_model):
+
+def save_compressed_patches(filename, compressedPatches, image_shape, patch_size, pca_model):
     """
-    Save the compressed image data to a file.
+    Save the compressed image data and PCA model to a file.
     
     Parameters:
     - filename: Name of the file to save data.
-    - quantized_data: Huffman-encoded data for DCT coefficients.
+    - compressedPatches: The compressed image patches.
     - image_shape: Shape of the original image.
     - patch_size: Size of the patches (e.g., (8, 8)).
-    - huffman_tree: Huffman tree used for encoding (stores codes and symbols).
+    - pca_model: PCA model used for compression.
     """
-    # Prepare data for saving
+    # Prepare metadata for saving
     metadata = {
         "image_shape": image_shape,
         "patch_size": patch_size,
-        "pca_model": pca_model  # Save the pca model codes for restoring
     }
+    
     with open(filename, 'wb') as file:
         # Save metadata as JSON for easy parsing
         file.write(json.dumps(metadata).encode('utf-8') + b'\n')
-        # Save the Huffman encoded data as binary
+        # Save the PCA model using pickle
+        pickle.dump(pca_model, file)
+        # Save the compressed patches as binary
         pickle.dump(compressedPatches, file)
 
 def save_compressed_image(filename, quantized_data, image_shape, patch_size, huffman_tree):
@@ -139,7 +142,7 @@ def reconstruct_image(patches, image_shape, patch_size):
                     reconstructed[i:i + size_x, j:j + size_y] = patches[patch_idx][:size_x, :size_y]
                     patch_idx += 1
     return reconstructed
-# TODO
+
 def load_compressed_patches(filename,components = Config.default_components):
     """
     Load and decompress the image data from a file.
@@ -152,13 +155,13 @@ def load_compressed_patches(filename,components = Config.default_components):
     """
     with open(filename, 'rb') as file:
         metadata = json.loads(file.readline().decode('utf-8'))
+        P = pickle.load(file)
         compressedPatches = pickle.load(file)
-    P = metadata["pca_model"]
     image_shape = metadata["image_shape"]
     patch_size = metadata["patch_size"]
-    decompressedPatches = (P.inverse_transform(compressedPatches)).reshape((compressedPatches.shape[0],patch_size,patch_size))
-    reconstructed_image = reconstruct_image(decompressedPatches,image_shape,patch_size)
-    return reconstruct_image
+    decompressedPatches = (P.inverse_transform(compressedPatches)).reshape((compressedPatches.shape[0],patch_size[0],patch_size[1]))
+    reconstructed_image = reconstruct_image(decompressedPatches,image_shape,patch_size[0])
+    return reconstructed_image
     
 def load_compressed_image(filename, quality=Config.default_quality):
     """

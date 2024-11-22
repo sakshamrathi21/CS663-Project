@@ -100,11 +100,14 @@ from algorithms.helper import *
 
 #             plt.tight_layout()
 #             plt.show()    
-
+def calc_bpp(image_shape,compressedImage_shape,patch_size,num_components):
+    denom = image_shape[0]*image_shape[1]
+    num = compressedImage_shape[0]*compressedImage_shape[1] + patch_size*patch_size*num_components
+    return num/denom
 
 def pca(num_paths = 20):
     image_paths = get_image_paths()[0:num_paths]
-    num_components = Config.num_components
+    num_components_list = Config.num_components_list
     bpp_results = []
     rmse_results = []
     for image_path in image_paths:
@@ -112,20 +115,19 @@ def pca(num_paths = 20):
         grayscale_image_copy = convert_to_grayscale_bmp(image_path)
         bpp_per_image = []
         rmse_per_image = []
-        for k in num_components:
-            P = PCA(k)
+        for k in num_components_list:
+            P = PCA(int(k))
             grayscale_image = grayscale_image_copy.copy()
             patches = extract_patches(grayscale_image)
             flattened_patches = patches.reshape(patches.shape[0],-1)
             P.fit(flattened_patches)
             compressedImage = P.transform(flattened_patches)
             save_compressed_patches("compressed_image.bin", compressedImage, grayscale_image.shape, patch_size=Config.patch_size, pca_model = P)
-            reconstructed_image = load_compressed_patches("compressed_image.bin", num_components = num_components)
+            reconstructed_image = load_compressed_patches("compressed_image.bin", k)
             rmse = calculate_rmse(grayscale_image, reconstructed_image)
-            # bpp = calculate_bpp(encoded_data, grayscale_image.shape)
-            # print(f"Quality: {quality}, RMSE: {rmse}, BPP: {bpp}")
-            # bpp_per_image.append(bpp)
-            # TODO
+            bpp = calc_bpp(flattened_patches.shape, compressedImage.shape,patches.shape[1],k)
+            print(f"Components {k}, RMSE: {rmse}, BPP: {bpp}")
+            bpp_per_image.append(bpp)
             rmse_per_image.append(rmse)
         bpp_results.append(bpp_per_image)
         rmse_results.append(rmse_per_image)
