@@ -13,6 +13,7 @@ def jpeg(num_paths=20):
     for image_path in image_paths:
         # grayscale_image_copy = get_gray_scale_image(image_path)
         grayscale_image_copy = convert_to_grayscale_bmp(image_path)
+        grayscale_image_copy = pad_image(grayscale_image_copy)
         # original_image = Image.open(image_path).convert("L")
         bpp_per_image = []
         rmse_per_image = []

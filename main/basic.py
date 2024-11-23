@@ -16,6 +16,8 @@ def basic(num_paths=20):
         # grayscale_image_copy = get_gray_scale_image(image_path)
         # print(convert_to_grayscale_bmp(image_path))
         grayscale_image_copy = convert_to_grayscale_bmp(image_path)
+        # orig_size = grayscale_image_copy.shape
+        grayscale_image_copy = pad_image(grayscale_image_copy)
         bpp_per_image = []
         rmse_per_image = []
         for quality in quality_factors:

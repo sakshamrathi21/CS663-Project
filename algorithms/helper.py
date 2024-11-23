@@ -7,6 +7,8 @@ def pad_image(image, patch_size=8):
     Pads the image so that its dimensions are divisible by patch_size.
     """
     h, w = image.shape
+    if h%patch_size == 0 and w%patch_size == 0:
+        return image
     pad_h = (patch_size - h % patch_size) % patch_size
     pad_w = (patch_size - w % patch_size) % patch_size
     padded_image = np.pad(image, ((0, pad_h), (0, pad_w)), mode='constant', constant_values=0)
@@ -203,7 +205,20 @@ def calculate_bpp(encoded_data, image_shape):
     return total_bits / num_pixels
 
 def calculate_rmse(original, compressed):
-    return np.sqrt(mean_squared_error(original, compressed))
+    # we need to calculate rrmse
+    squared_diff = (original - compressed) ** 2
+    
+    # Mean squared error
+    mse = np.mean(squared_diff)
+    
+    # Mean square of the original image
+    mean_square_original = np.mean(original ** 2)
+    
+    # Compute RRMSE
+    rrmse = np.sqrt(mse / mean_square_original)
+    
+    return rrmse
+    # return np.sqrt(mean_squared_error(original, compressed))
 
 def rmse_vs_bpp_plot(bpp_results, rmse_results, image_paths, plot_path):
     plt.figure(figsize=(12, 8))
