@@ -6,7 +6,7 @@ from algorithms.advanced_helper import *
 
 def basic(num_paths=20):
     config = Config()
-    image_paths = get_image_paths()[0:num_paths]
+    image_paths = get_image_paths(True)[0:num_paths]
     window_sizes = [3, 5, 7, 9, 11]
     bpp_results = []
     rmse_results = []

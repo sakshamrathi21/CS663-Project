@@ -217,8 +217,11 @@ def rmse_vs_bpp_plot(bpp_results, rmse_results, image_paths, plot_path):
     plt.legend()
     plt.savefig(plot_path)
 
-def get_image_paths():
-    image_paths = glob.glob(Config.dataset_path)
+def get_image_paths(cartoon=False):
+    if cartoon:
+        image_paths = glob.glob(Config.cartoon_path)
+    else:
+        image_paths = glob.glob(Config.dataset_path)
     num_random_images = Config.basic_step_5_num_images
     image_paths = random.sample(image_paths, num_random_images)
     return image_paths
