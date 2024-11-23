@@ -103,6 +103,17 @@ def decoder(mask_path, masked_image_path, orig_image_path, save_path):
     # Save the restored image
     cv2.imwrite(save_path, res_im)
 
+    # I want to display the original and the reconstructed image:
+    # plt.figure()
+    # plt.imshow(cv2.cvtColor(orig_im, cv2.COLOR_BGR2RGB))
+    # plt.title("Original Image")
+    # plt.show()
+
+    # plt.figure()
+    # plt.imshow(cv2.cvtColor(res_im, cv2.COLOR_BGR2RGB))
+    # plt.title("Restored Image")
+    # plt.show()
+
     # Display the images
     # plt.figure()
     # plt.imshow(cv2.cvtColor(orig_im, cv2.COLOR_BGR2RGB))
