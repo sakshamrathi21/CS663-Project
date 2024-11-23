@@ -1,2 +1,2 @@
-zpaq x ./compressed/im2.archive
-../../../jbigkit/pbmtools/jbgtopbm ./compressed/m_im2.jbg m_im2.pbm
+zpaq x ./compressed/im3.archive
+../../../jbigkit/pbmtools/jbgtopbm ./compressed/m_im3.jbg m_im3.pbm

@@ -8,10 +8,11 @@ function [psnr] = decoder(maskPath,maskedImagePath,origImagePath,savePath)
     res_im = imread(maskedImagePath);
     mask_im = imread(maskPath);
     orig_im = imread(origImagePath);
+    orig_im=padarray(orig_im,[5,5]);
     
     % Homogenous Diffusion %
     delta_t=0.09;
-    max_time=500;
+    max_time=1000;
 
     % convert mask from logical to double to avoid calculation loss
     msk = double(mask_im);

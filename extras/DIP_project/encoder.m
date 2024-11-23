@@ -6,14 +6,16 @@ function encoder( imagePath,maskPath,maskedImagePath )
 % maskImagePath must have .pbm extension
 
     im = imread(imagePath);
+    im=padarray(im,[5,5]);
     [m,n,~] = size(im);
 
     % get the edges using canny detector
     ed_im = edge(rgb2gray(im),'canny');     
     mask_im = uint8(ones(m,n,3));
+    mask_im = mask_im * 255;
 
     % exclude neighbour of pixel around edges also in mask
-    window = 3;
+    window = 7;
     pd = (window-1)/2;
 
     % padded mask
@@ -23,6 +25,8 @@ function encoder( imagePath,maskPath,maskedImagePath )
         for j=pd+1:pd+n
             % exclude the neighbour if edge found
             if ed_im(i-pd,j-pd)
+                disp(i);
+                disp(j);
                 pmsk(i-pd:i+pd,j-pd:j+pd,:) = 0;
             end
         end
@@ -33,10 +37,10 @@ function encoder( imagePath,maskPath,maskedImagePath )
 
     % we also exclude the boundary pixels of image in the mask
     % this will help us in generating the background in less time
-    mask_im(1,:,:) = 0;
-    mask_im(m,:,:) = 0;
-    mask_im(:,1,:)= 0;
-    mask_im(:,n,:) = 0;
+    % mask_im(1,:,:) = 0;
+    % mask_im(m,:,:) = 0;
+    % mask_im(:,1,:)= 0;
+    % mask_im(:,n,:) = 0;
     
     % generate image with negation to mask applied to it 
     % this will give us pixels on and near edges and rest 0 everywhere

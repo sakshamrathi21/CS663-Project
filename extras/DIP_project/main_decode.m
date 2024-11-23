@@ -1,0 +1,1 @@
+decoder('data/m_im3.pbm','data/res_im3.png','data/im3.png','data/restored_im3.png');
