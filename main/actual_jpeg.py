@@ -22,6 +22,7 @@ def jpeg(num_paths=20):
             grayscale_image_copy = grayscale_image_copy.copy()
             # rmse = np.sqrt(np.mean((compressed_image_array - grayscale_image_copy) ** 2))
             rmse = calculate_rmse(grayscale_image_copy, compressed_image_array)
+            # print("hello", rmse)
             compressed_file_size_bytes = os.path.getsize("../results/compressed_image.jpeg")
             compressed_file_size_bits = compressed_file_size_bytes * 8
             total_pixels = grayscale_image_copy.size
