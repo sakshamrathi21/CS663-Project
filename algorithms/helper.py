@@ -192,6 +192,11 @@ def load_compressed_image(filename, quality=Config.default_quality):
     reconstructed_image = np.clip(reconstructed_image, 0, 255).astype(np.uint8)
     return reconstructed_image
 
+def calc_bpp(image_shape,compressedImage_shape,patch_size,num_components):
+    denom = image_shape[0]*image_shape[1]
+    num = 8*(compressedImage_shape[0]*compressedImage_shape[1] + patch_size*patch_size*num_components)
+    return num/denom
+
 def calculate_bpp(encoded_data, image_shape):
     total_bits = len(encoded_data) * Config.bits_per_symbol  # Assuming bits_per_symbol is defined
     num_pixels = image_shape[0] * image_shape[1]
