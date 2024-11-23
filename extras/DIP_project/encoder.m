@@ -10,7 +10,11 @@ function encoder( imagePath,maskPath,maskedImagePath )
     [m,n,~] = size(im);
 
     % get the edges using canny detector
-    ed_im = edge(rgb2gray(im),'canny');     
+    ed_im = edge(rgb2gray(im),'canny');  
+    figure;
+    imshow(ed_im);
+    title('edges');
+    pause(2);
     mask_im = uint8(ones(m,n,3));
     mask_im = mask_im * 255;
 
@@ -56,7 +60,7 @@ function encoder( imagePath,maskPath,maskedImagePath )
     
     % make the mask logical before saving
     mask_im = logical(mask_im);
-    
+    disp(size(mask_im))
     % save these images for compressing 
     imwrite(mask_im,maskPath);
     imwrite(res_im,maskedImagePath);
