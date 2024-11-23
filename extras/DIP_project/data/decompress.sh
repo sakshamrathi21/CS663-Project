@@ -1,6 +1,2 @@
-
-for i in {1..5};do zpaq x im$i.archive ;done
-for i in {1..5};do jbgtopbm m_im$i.jbg m_im$i.pbm ;done
-
-
-
+zpaq x ./compressed/im2.archive
+../../../jbigkit/pbmtools/jbgtopbm ./compressed/m_im2.jbg m_im2.pbm
