@@ -10,3 +10,4 @@ __pycache__
 *.cpython
 *.bin
 *.o
+jbigkit/*
