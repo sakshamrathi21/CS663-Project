@@ -100,10 +100,6 @@ from algorithms.helper import *
 
 #             plt.tight_layout()
 #             plt.show()    
-def calc_bpp(image_shape,compressedImage_shape,patch_size,num_components):
-    denom = image_shape[0]*image_shape[1]
-    num = compressedImage_shape[0]*compressedImage_shape[1] + patch_size*patch_size*num_components
-    return num/denom
 
 def pca(num_paths = 20):
     image_paths = get_image_paths()[0:num_paths]
