@@ -7,10 +7,7 @@ from algorithms.advanced_helper import *
 def basic(num_paths=20):
     config = Config()
     image_paths = get_image_paths()[0:num_paths]
-    # image_paths = ['../images/jpgb.png']
-    # quality_factors = Config.quality_factors
     window_sizes = [3, 5, 7, 9, 11]
-    # quality_factors = [2, 10, 50, 80]
     bpp_results = []
     rmse_results = []
 
@@ -22,4 +19,5 @@ def basic(num_paths=20):
             print("RMSE: ", rmse)
             bpp_results.append(size_in_bits)
             rmse_results.append(rmse)
-basic(1)
+    return bpp_results, rmse_results
+
