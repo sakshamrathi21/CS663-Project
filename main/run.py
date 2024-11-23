@@ -1,6 +1,6 @@
 import sys
 import subprocess
-import runlength, basic, actual_jpeg, runlength, comparison, pca
+import runlength, basic, actual_jpeg, runlength, comparison, pca, colour
 import sys
 sys.path.append('..')
 from algorithms.helper import *
@@ -23,6 +23,9 @@ if __name__ == "__main__":
         elif file_number == "pca":
             bpp_results, rmse_results = pca.pca()
             rmse_vs_bpp_plot(bpp_results, rmse_results, get_image_paths(), plot_path='../results/pca.png')
+        elif file_number == "colour":
+            bpp_results, rmse_results = colour.colour()
+            rmse_vs_bpp_plot(bpp_results, rmse_results, get_image_paths(), plot_path='../results/colour.png')
         else:
             print("Invalid file name")
     elif len(sys.argv) == 3:

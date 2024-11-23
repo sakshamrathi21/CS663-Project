@@ -356,6 +356,21 @@ def show_images_side_by_side(reconstructed_image, grayscale_image, title="Recons
     plt.savefig(title)
     plt.close()
 
+def convert_to_rgb_bmp(image_path):
+    # Open the image file
+    with Image.open(image_path) as img:
+        # Convert the image
+        img = img.convert("RGB")
+        # Create an in-memory file
+        bmp_buffer = io.BytesIO()
+        # Save the image as BMP in the buffer
+        img.save(bmp_buffer, format="BMP")
+        # Move the cursor to the beginning of the buffer
+        bmp_buffer.seek(0)
+        # Convert the image to a NumPy array
+        np_array = np.array(img, dtype=np.float64)
+    return np_array
+
 def convert_to_grayscale_bmp(image_path):
     # Open the image file
     with Image.open(image_path) as img:
@@ -402,3 +417,157 @@ def show_image(image, title, cmap='gray'):
     plt.title(title)
     plt.axis('off')
     plt.show()
+
+def rgb_image_to_yuv(image):
+    (height, width, _) = image.shape
+
+    # RGB in range [0,255]
+    pixels = image.reshape(height * width, 3)
+
+    # RGB in range [0-1]
+    pixels = pixels / 255
+    r = pixels[:, 0]
+    g = pixels[:, 1]
+    b = pixels[:, 2]
+
+    # Y in range [0,1]
+    # U in range [-0.886,0.886]
+    # V in range [-0.701,0.701]
+    temp_r = 0.299*r
+    temp_g = 0.587*g
+    temp_b = 0.114*b
+    y = temp_r + temp_g + temp_b
+    u = -temp_r - temp_g + 0.886*b
+    v = 0.701*r - temp_g - temp_b
+
+    # YUV in range [0,255]
+    y = y * 255
+    u = ((u + 0.886 ) / 1.772) * 255
+    v = ((v + 0.701) / 1.402) * 255
+
+    yuv_pixels = np.stack([y, u, v], axis=1)
+
+    yuv_image = yuv_pixels.reshape(height, width, 3)
+    return np.round(yuv_image)
+
+def subsampling(image):
+    y = image[:, :, 0]
+    u = image[:, :, 1]
+    v = image[:, :, 2]
+
+    # Keep only the top left sample of every 2x2 block for chrominance
+    u = u[::2, ::2]
+    v = v[::2, ::2]
+
+    return y, u, v
+
+def yuv_image_to_rgb(image):
+    (height, width, _) = image.shape
+
+    # YUV in range [0,255]
+    pixels = image.reshape(height * width, 3)
+
+    # YUV in range [0-1]
+    pixels = pixels / 255
+    y = pixels[:, 0]
+    u = pixels[:, 1]
+    v = pixels[:, 2]
+
+    # Y in range [0,1]
+    # U in range [-0.886,0.886]
+    # V in range [-0.701,0.701]
+    u = u * 1.772 - 0.886
+    v = v * 1.402 - 0.701
+
+    # RGB in range [0,255]
+    r = (y + v) * 255
+    g = (y - 0.19420*u - 0.50936*v) * 255
+    b = (y + u) * 255
+
+    rgb_pixels = np.stack([r, g, b], axis=1)
+    rgb_pixels[rgb_pixels > 255] = 255
+    rgb_pixels[rgb_pixels < 0] = 0
+
+    rgb_image = rgb_pixels.reshape(height, width, 3)
+
+    return np.round(rgb_image)
+
+def save_compressed_rgb_image(filename, quantized_data, y_size, u_size, v_size, image_shape, patch_size, huffman_tree):
+    # Prepare data for saving
+    metadata = {
+        "image_shape": image_shape,
+        "patch_size": patch_size,
+        "huffman_codes": huffman_tree.codes,  # Save the Huffman codes for decoding
+        "y_size": y_size,
+        "u_size": u_size,
+        "v_size": v_size
+    }
+    # print(metadata, quantized_data)
+    # If the type of values of huffman_codes is int, convert to float:
+    metadata["huffman_codes"] = {
+        int(k) if isinstance(k, np.integer) else k: 
+        v if isinstance(v, str) else str(v)  # Convert value to string if not already
+        for k, v in metadata["huffman_codes"].items()
+    }
+    
+    with open(filename, 'wb') as file:
+        # Save metadata as JSON for easy parsing
+        file.write(json.dumps(metadata).encode('utf-8') + b'\n')
+        # Save the Huffman encoded data as binary
+        pickle.dump(quantized_data, file)
+
+def load_compressed_rgb_image(filename, quality=Config.default_quality):
+    """
+    Load and decompress the image data from a file.
+    
+    Parameters:
+    - filename: Name of the file to load data.
+    
+    Returns:
+    - Reconstructed image from the compressed data.
+    """
+    with open(filename, 'rb') as file:
+        metadata = json.loads(file.readline().decode('utf-8'))
+        encoded_data = pickle.load(file)
+    huffman_tree = HuffmanTree()
+    huffman_tree.codes = metadata["huffman_codes"]
+    
+    image_shape = metadata["image_shape"]
+    huffman_decoded_data = huffman_tree.decode(encoded_data)
+
+    # Get y, u, v channel
+    y_size = metadata["y_size"]
+    u_size = metadata["u_size"]
+    v_size = metadata["v_size"]
+    decoded_flat_y_channel = huffman_decoded_data[:y_size]
+    decoded_flat_u_channel = huffman_decoded_data[y_size:y_size+u_size]
+    decoded_flat_v_channel = huffman_decoded_data[-v_size:]
+
+    # Reshape
+    quantized_y_channel = np.array(decoded_flat_y_channel, dtype=np.float32).reshape((image_shape[0], image_shape[1]))
+    quantized_u_channel = np.array(decoded_flat_u_channel, dtype=np.float32).reshape((image_shape[0] // 2, image_shape[1] // 2))
+    quantized_v_channel = np.array(decoded_flat_v_channel, dtype=np.float32).reshape((image_shape[0] // 2, image_shape[1] // 2))
+
+    # Inverse quantization
+    unquantized_y_channel = quantization(quantized_y_channel, quality, inverse=True)
+    unquantized_u_channel = quantization(quantized_u_channel, quality, inverse=True)
+    unquantized_v_channel = quantization(quantized_v_channel, quality, inverse=True)
+
+    # Inverse DCT
+    reconstructed_y_channel = dct2d(unquantized_y_channel, inverse=True)
+    reconstructed_u_channel = dct2d(unquantized_u_channel, inverse=True)
+    reconstructed_v_channel = dct2d(unquantized_v_channel, inverse=True)
+
+    # Turn back u and v channels to original size
+    reconstructed_u_channel = np.kron(reconstructed_u_channel, np.ones((2, 2)))
+    reconstructed_v_channel = np.kron(reconstructed_v_channel, np.ones((2, 2)))
+
+    # Combine channels
+    reconstructed_image = np.zeros(image_shape)
+    reconstructed_image = np.stack([reconstructed_y_channel, reconstructed_u_channel, reconstructed_v_channel], axis=-1)
+
+    # Convert YUV to RGB
+    reconstructed_image = yuv_image_to_rgb(reconstructed_image)
+
+    reconstructed_image = np.clip(reconstructed_image, 0, 255).astype(np.uint8)
+    return reconstructed_image
