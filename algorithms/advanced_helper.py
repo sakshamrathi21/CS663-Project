@@ -115,7 +115,7 @@ def decoder(mask_path, masked_image_path, orig_image_path, save_path):
     # plt.show()
     return calculate_rmse(orig_im, res_im)
 
-def encoder(image_path, mask_path, masked_image_path):
+def encoder(image_path, mask_path, masked_image_path, window=7):
     """
     Generates a mask from an input image using Canny edge detection,
     applies the mask to the image, and saves the results.
@@ -149,7 +149,7 @@ def encoder(image_path, mask_path, masked_image_path):
     mask_im = np.ones((m, n, 3), dtype=np.uint8) * 255
 
     # Define the window size for the neighborhood exclusion (same as MATLAB)
-    window = 7
+    # window = 7
     pd = (window - 1) // 2
 
     # Pad the mask for edge handling
@@ -214,10 +214,10 @@ def get_file_size_in_bits(file_path):
     
     return file_size_bits
 
-def encode(image_path):
+def encode(image_path, window=7):
     mask_path = '../temp/mask.pbm'
     masked_image_path = '../temp/masked_image.png'
-    im_pixels = encoder(image_path, mask_path, masked_image_path)
+    im_pixels = encoder(image_path, mask_path, masked_image_path, window)
     os.system("rm -rf ../temp/compressed")
     os.system("mkdir -p ../temp && mkdir -p ../temp/compressed")
     os.system("../jbigkit/pbmtools/pbmtojbg ../temp/mask.pbm ../temp/compressed/masked_image.jbg")

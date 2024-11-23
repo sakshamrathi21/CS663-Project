@@ -8,16 +8,18 @@ def basic(num_paths=20):
     config = Config()
     image_paths = get_image_paths()[0:num_paths]
     # image_paths = ['../images/jpgb.png']
-    quality_factors = Config.quality_factors
+    # quality_factors = Config.quality_factors
+    window_sizes = [3, 5, 7, 9, 11]
     # quality_factors = [2, 10, 50, 80]
     bpp_results = []
     rmse_results = []
 
     for image_path in image_paths:
-        size_in_bits = encode(image_path)
-        rmse = decode(image_path)
-        print("Size in bits: ", size_in_bits)
-        print("RMSE: ", rmse)
-        bpp_results.append(size_in_bits)
-        rmse_results.append(rmse)
+        for window_size in window_sizes:
+            size_in_bits = encode(image_path, window_size)
+            rmse = decode(image_path)
+            print("Size in bits: ", size_in_bits)
+            print("RMSE: ", rmse)
+            bpp_results.append(size_in_bits)
+            rmse_results.append(rmse)
 basic(1)
