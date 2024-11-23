@@ -47,3 +47,13 @@ def edgesMarrHildreth(img, sigma):
                     zero_crossing[i][j] = 255
 
     return log, zero_crossing
+
+
+def cannyEdge(img_path, colour=False):
+    if not colour:
+        img = cv.imread(img_path, cv.IMREAD_GRAYSCALE)
+    else:
+        img = cv.imread(img_path, cv.IMREAD_COLOR)
+    assert img is not None, "file could not be read, check with os.path.exists()"
+    edges = cv.Canny(img,100,200)
+    return edges
