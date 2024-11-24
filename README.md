@@ -43,6 +43,10 @@ You can download the datasets from the above link.
 - To run the code for "Edge-Based Image Compression with Homogeneous Diffusion" (code in `main/paper.py`), run the following command:
 `python3 run.py paper`
 
+## Downloading JBIG-KIT
+It is needed for the paper implementation. You can download it from the following link:
+`git clone https://github.com/Distrotech/jbigkit.git`
+
 ## Report
 The report for the project can be found at `documentation/presentation.pdf`.
 
