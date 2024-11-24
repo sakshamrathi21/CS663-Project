@@ -6,9 +6,9 @@ from algorithms.helper import *
 def colour(num_paths=20):
     config = Config()
     image_paths = get_image_paths()[0:num_paths]
-    # image_paths = ['../images/jpgb.png']
+    image_paths = ['../images/jpgb.png']
     quality_factors = Config.quality_factors
-    # quality_factors = [2, 10, 50, 80]
+    quality_factors = [2, 10, 50, 80]
     bpp_results = []
     rmse_results = []
 
@@ -73,7 +73,7 @@ def colour(num_paths=20):
             rmse = calculate_rmse(image, reconstructed_image)
             bpp = calculate_bpp(encoded_data, image.shape)
             print(f"Quality: {quality}, RMSE: {rmse}, BPP: {bpp}")
-            show_images_side_by_side(reconstructed_image, image/255, title=f"../results/Quality: {quality}_comparison.png")
+            show_images_side_by_side(reconstructed_image, image/255, title=f"../results/Quality: {quality}_comparison_colour.png")
             bpp_per_image.append(bpp)
             rmse_per_image.append(rmse)
         bpp_results.append(bpp_per_image)
