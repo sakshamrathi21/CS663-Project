@@ -10,7 +10,8 @@ def basic(num_paths=5):
     image_paths = get_image_paths(True)[0:num_paths]
     # image_paths = ["../extras/DIP_project/data/im2.png"]
     # os.system("ls ../extras/data/im2.png")
-    window_sizes = [3, 5, 7, 9, 11]
+    window_sizes = [7]
+    # window_sizes = [3, 5, 7, 9, 11]
     # window_sizes = [7]
     
     bpp_r = []
