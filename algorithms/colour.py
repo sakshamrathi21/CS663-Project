@@ -6,7 +6,7 @@ import cv2
 from scipy.stats import stats
 import matplotlib.image as mpimg
 
-img = cv2.cvtColor(cv2.imread('2.jpg'), cv2.COLOR_BGR2RGB)
+img = cv2.cvtColor(cv2.imread('../images/landscape_images/color/0.jpg'), cv2.COLOR_BGR2RGB)
 plt.imshow(img)
 plt.show()
 

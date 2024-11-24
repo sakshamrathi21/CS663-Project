@@ -29,6 +29,9 @@ if __name__ == "__main__":
         elif file_number == "paper":
             bpp_results, rmse_results = paper.basic(20)
             rmse_vs_bpp_plot(bpp_results, rmse_results, get_image_paths(), plot_path='../results/paper.png')
+        elif file_number == "dpca":
+            bpp_results, rmse_results = pca.dpca()
+            rmse_vs_bpp_plot(bpp_results, rmse_results, get_image_paths(), plot_path='../results/dpca.png')
         else:
             print("Invalid file name")
     elif len(sys.argv) == 3:

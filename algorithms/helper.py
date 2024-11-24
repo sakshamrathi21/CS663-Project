@@ -71,7 +71,18 @@ def quantization(matrix, quality=Config.default_quality, inverse=False):
                 matrix[y:y+8, x:x+8] = np.round(block / q_matrix)
     return matrix
 
-# TODO
+def save_compressed_pca_model(filename,pca_model):
+    with open(filename,'wb') as file:
+        pickle.dump(pca_model, file)
+
+def save_compressed_patches_without_model(filename,compressedPatches, image_shape, patch_size):
+    metadata = {
+        "image_shape": image_shape,
+        "patch_size": patch_size,
+    } 
+    with open(filename, 'wb') as file:
+        file.write(json.dumps(metadata).encode('utf-8') + b'\n')
+        pickle.dump(compressedPatches, file)
 
 def save_compressed_patches(filename, compressedPatches, image_shape, patch_size, pca_model):
     """
@@ -145,6 +156,21 @@ def reconstruct_image(patches, image_shape, patch_size):
                     patch_idx += 1
     return reconstructed
 
+def load_compressed_pca_model(filename):
+    with open(filename, 'rb') as file:
+        P = pickle.load(file)
+    return P
+
+def load_compressed_patches_without_model(filename,pca_model,components = Config.default_components):
+    with open(filename, 'rb') as file:
+        metadata = json.loads(file.readline().decode('utf-8'))
+        compressedPatches = pickle.load(file)
+    image_shape = metadata["image_shape"]
+    patch_size = metadata["patch_size"]
+    decompressedPatches = (pca_model.inverse_transform(compressedPatches)).reshape((compressedPatches.shape[0],patch_size[0],patch_size[1]))
+    reconstructed_image = reconstruct_image(decompressedPatches,image_shape,patch_size[0])
+    return reconstructed_image
+
 def load_compressed_patches(filename,components = Config.default_components):
     """
     Load and decompress the image data from a file.
@@ -194,9 +220,14 @@ def load_compressed_image(filename, quality=Config.default_quality):
     reconstructed_image = np.clip(reconstructed_image, 0, 255).astype(np.uint8)
     return reconstructed_image
 
-def calc_bpp(image_shape,compressedImage_shape,patch_size,num_components):
+def calculate_bpp_pca(image_shape,compressedImage_shape,patch_size,num_components):
     denom = image_shape[0]*image_shape[1]
     num = 8*(compressedImage_shape[0]*compressedImage_shape[1] + patch_size*patch_size*num_components)
+    return num/denom
+
+def calculate_bpp_dpca(image_shape,compressedImage_shape,patch_size,num_components):
+    denom = image_shape[0]*image_shape[1]
+    num = 8*(compressedImage_shape[0]*compressedImage_shape[1])
     return num/denom
 
 def calculate_bpp(encoded_data, image_shape):
@@ -232,15 +263,42 @@ def rmse_vs_bpp_plot(bpp_results, rmse_results, image_paths, plot_path):
     plt.legend()
     plt.savefig(plot_path)
 
-def get_image_paths(cartoon=False):
+def get_image_paths(cartoon = False,folder = False):
     if cartoon:
         image_paths = glob.glob(Config.cartoon_path)
+    elif folder:
+        image_paths = glob.glob(Config.folder_path + '*')
     else:
         image_paths = glob.glob(Config.dataset_path)
     num_random_images = Config.basic_step_5_num_images
     image_paths = random.sample(image_paths, num_random_images)
     return image_paths
 
+def get_grayscale_images_from_folder(folder_path):
+    """
+    Loads all grayscale images from a folder, normalizes them, and returns as a list.
+    """
+    images = []
+    for filename in os.listdir(folder_path):
+        filepath = os.path.join(folder_path, filename)
+        if filename.lower().endswith(('.png', '.jpg', '.jpeg')):  # Check for valid image file extensions
+            image = Image.open(filepath).convert('L')  # Convert to grayscale
+            images.append(np.array(image) / 255.0)  # Normalize to range [0, 1]
+    return images
+
+def extract_patches_from_dataset(images,patch_size = 8):
+    patches = []
+    for img_idx, image in enumerate(images):
+        # plt.figure(figsize=(10, 5))
+        # plt.subplot(1, 2, 1)
+        # plt.imshow(image, cmap='gray')
+        # plt.title("Original Image")
+        # plt.axis('off')
+        # plt.show()
+        padded_image = pad_image(image, patch_size)
+        patches.extend(extract_patches(padded_image, patch_size))
+    patches = np.array(patches)
+    return patches
 def get_gray_scale_image(image_path):
     image = plt.imread(image_path)
     if image.shape[-1] == 4:
@@ -404,6 +462,9 @@ def convert_to_grayscale_bmp(image_path):
         np_array = np.array(grayscale_img, dtype=np.float64)
     return np_array
 
+def extract_colour_image(image_path):
+    colour_image = cv2.cvtColor(cv2.imread(image_path), cv2.COLOR_BGR2RGB)
+    return colour_image
 
 def apply_jpeg_compression(np_array, save_path, quality=50):
     """
