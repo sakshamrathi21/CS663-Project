@@ -34,7 +34,6 @@ def pca(num_paths = 20):
 def dpca():
     folder_path = Config.folder_path  # Replace with your folder path
     grayscale_images = get_grayscale_images_from_folder(folder_path)
-    # print(np.array(grayscale_images).shape)
     patches = extract_patches_from_dataset(grayscale_images)
 
     flattened_patches = patches.reshape(patches.shape[0],-1)
@@ -49,19 +48,19 @@ def dpca():
         save_compressed_pca_model("compressed_model.bin",P)
         for img_idx,grayscale_image in enumerate(grayscale_images):
             padded_image = pad_image(grayscale_image)
-            patches = extract_patches(padded_image)
-            flattened = patches.reshape(patches.shape[0],-1)
+            patches_image = extract_patches(padded_image)
+            flattened = patches_image.reshape(patches_image.shape[0],-1)
             compressedImage = P.transform(flattened)
             output_file = os.path.join(folder, f"compressed_image{img_idx}.bin")
             save_compressed_patches_without_model(output_file, compressedImage, grayscale_image.shape, patch_size=Config.patch_size)
+            bpp = calculate_bpp_dpca(flattened.shape, compressedImage.shape,patches.shape[1],k)
+            bpp_results[img_idx][i]= bpp
         P = load_compressed_pca_model("compressed_model.bin")
         for img_idx,grayscale_image in enumerate(grayscale_images):
             input_file = os.path.join(folder, f"compressed_image{img_idx}.bin")
             reconstructed_image = load_compressed_patches_without_model(input_file,P, Config.num_components)        
             rmse = calculate_rmse(grayscale_image, reconstructed_image)
-            bpp = calculate_bpp_dpca(flattened_patches.shape, compressedImage.shape,patches.shape[1],k)
             print(f"Components {k}, RMSE: {rmse}, BPP: {bpp}")
-            bpp_results[img_idx][i]= bpp
             rmse_results[img_idx][i] = rmse
         i = i + 1
     return bpp_results, rmse_results
