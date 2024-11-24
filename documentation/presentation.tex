@@ -413,13 +413,19 @@
 \begin{frame}
 	\frametitle{Innovations Incorporated}
 	\begin{itemize}
-		\item 
+		\item Runlength encoding and zigzag ordering of DCT coefficients
+		\item PCA for a single grayscale image, a dataset of grayscale images (optimized memory with no redundancies in saving the model), and a single coloured image
+		\item Comparison over different quantization matrices
+		\item JPEG Implementation for a coloured image
+		\item Implementation of the paper ``Edge-Based Image Compression with Homogeneous Diffusion''
+		\begin{itemize}
+			\item To detect borders of the image, we padded with cells of zero intensity
+			\item To reduce the black patches in regions of uniform intensity, we are changing the window size (tradeoff between size and accuracy)
+			\item Varied diffusion time for getting the best output for the target images (tradeoff between time and accuracy)
+		\end{itemize}
 	\end{itemize}
 \end{frame}
-\section{Conclusion}
-\begin{frame}
-	\frametitle{Conclusion}
-\end{frame}
+
 
 \section{References}
 
