@@ -14,6 +14,12 @@ In the advanced part of this project, we:-
 - implemented a PCA-based image compression algorithm for single image (grayscale and colour) and dataset of grayscale images, and,
 - researched, implemented and innovated on the paper "Edge-Based Image Compression with Homogeneous Diffusion".
 
+## How to download the datasets
+The folders containing the datasets are available at:
+`https://github.com/sakshamrathi21/Image-Compression-Project/tree/main/images`
+
+You can download the datasets from the above link.
+
 ## Instructions to run the code
 - Clone the repository using the following command:
 `git clone https://github.com/sakshamrathi21/Image-Compression-Project.git`
