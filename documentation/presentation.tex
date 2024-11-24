@@ -104,9 +104,9 @@
 		\item Implementation of the Huffman tree
 		\item Writing data to an appropriate file format (.bin) and plotting RRMSE vs BPP
 	\end{itemize}
-	Here is the expression of RMSE:
+	Here is the expression of RRMSE:
 	\begin{equation}
-		\text{RMSE} = \frac{\sqrt{\frac{1}{N} \sum_{i=1}^{N}\sum_{j=1}^{M} (I_{\text{orig}}(i)(j) - I_{\text{recon}}(i)(j))^2}}{\sqrt{\frac{1}{N} \sum_{i=1}^{N}\sum_{j=1}^{M} (I_{\text{orig}}(i)(j))^2}}
+		\text{RRMSE} = \frac{\sqrt{\frac{1}{N} \sum_{i=1}^{N}\sum_{j=1}^{M} (I_{\text{orig}}(i)(j) - I_{\text{recon}}(i)(j))^2}}{\sqrt{\frac{1}{N} \sum_{i=1}^{N}\sum_{j=1}^{M} (I_{\text{orig}}(i)(j))^2}}
 	\end{equation}
 	where $I_{\text{orig}}$ is the original image and $I_{\text{recon}}$ is the reconstructed image. BPP stands for the size of the image in bits divided by the number of pixels.
 \end{frame}
