@@ -88,7 +88,7 @@
 		\href{https://www.cse.iitb.ac.in/~ajitvr/CS663_Fall2024/project.html}{\textcolor{blue}{\underline{CS663: Digital Image Processing}}}
 	\end{center}
 
-	We have built an image compression engine along the lines of the JPEG algorithm. Along with this, we have implemented PCA algorithm. We have also thoroughly studied a tier-1 conference paper {\bf Approximation and Compression With Sparse Orthonormal Transforms} and implemented the algorithm proposed in the paper.
+	We have built an image compression engine along the lines of the JPEG algorithm. Along with this, we have implemented PCA (both for coloured and grayscale images) algorithm. We have thoroughly studied a tier-1 conference paper {\bf Edge-Based Image Compression with Homogeneous Diffusion} and implemented the algorithm proposed in the paper.
 	\vspace{1cm}
 
 	All the algorithms were tested on a variety of image datasets. The results were compared and analyzed to understand the performance of the algorithms.
@@ -102,11 +102,11 @@
 		\item Computation of the 2D DCT coefficients of non-overlapping image patches
 		\item Implementation of the quantization step
 		\item Implementation of the Huffman tree
-		\item Writing data to an appropriate file format (.bin) and plotting RMSE vs BPP
+		\item Writing data to an appropriate file format (.bin) and plotting RRMSE vs BPP
 	\end{itemize}
 	Here is the expression of RMSE:
 	\begin{equation}
-		\text{RMSE} = \sqrt{\frac{1}{N} \sum_{i=1}^{N}\sum_{j=1}^{M} (I_{\text{orig}}(i)(j) - I_{\text{recon}}(i)(j))^2}
+		\text{RMSE} = \frac{\sqrt{\frac{1}{N} \sum_{i=1}^{N}\sum_{j=1}^{M} (I_{\text{orig}}(i)(j) - I_{\text{recon}}(i)(j))^2}}{\sqrt{\frac{1}{N} \sum_{i=1}^{N}\sum_{j=1}^{M} (I_{\text{orig}}(i)(j))^2}}
 	\end{equation}
 	where $I_{\text{orig}}$ is the original image and $I_{\text{recon}}$ is the reconstructed image. BPP stands for the size of the image in bits divided by the number of pixels.
 \end{frame}
@@ -216,6 +216,29 @@
 	\end{figure}
 \end{frame}
 
+\section{Paper Implementation}
+\begin{frame}
+    \centering
+    {\Huge \textbf{Edge-Based Image Compression}}
+
+	\vspace{1cm}
+	This paper is based on the fact that edges contain semantically important information in an image. They present a lossy compression method for cartoon-like images.
+\end{frame}
+
+\begin{frame}
+	\frametitle{Encoding Steps}
+	\begin{itemize}
+		\item Firstly, we need to detect edges in the image. The paper proposes Marr-Hildreth edge detector. However, based on our initial experiments, we found that the Canny edge detector works better.
+		\item Now we store the result of edge detection using JBIG(Joint Bi-level Image Experts Group) encoding.
+		\item Then, we encode the contour pixel values. Basically, we store the
+		values from both sides of the edge. The extracted pixel values can be uniformly quantised to $2^q$ diﬀerent values,
+		where $q \in \{1, 2, \dots, 8\}$. Another parameter $d$, ensures that only every $d^{th}$ value along an edge is stored.
+		\item The quantised and subsampled pixel value signal is then compressed by a PAQ compression method (lossless compression archiver).
+		\item Now, we need to store the encoded data along with all the values of the hyper-parameters.
+	\end{itemize}
+\end{frame}
+
+
 
 
 
@@ -224,12 +247,30 @@
 \begin{frame}
 	\frametitle{Individual Contributions}
 	\begin{alertblock}{Saksham Rathi}
+		Basic Implementation\\
+		Paper understanding and implementation\\
+		Code Modularity\\
+		Report Completion
 	\end{alertblock}
 	\begin{alertblock}{Kavya Gupta}
+		Basic Implementation\\
+		Coloured JPEG\\
+		Paper understanding and implementation
 	\end{alertblock}
 	\begin{alertblock}{Shravan Srinivasa Raghavan}
+		PCA\\
+		Paper understanding and implementation
 	\end{alertblock}
 
+\end{frame}
+
+\section{Innovations Incorporated}
+
+\begin{frame}
+	\frametitle{Innovations Incorporated}
+	\begin{itemize}
+		\item 
+	\end{itemize}
 \end{frame}
 \section{Conclusion}
 \begin{frame}
