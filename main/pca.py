@@ -171,21 +171,32 @@ def cpca(num_paths = 20):
     bpp_results = []
     rmse_results = []
     for image_path in image_paths:
-        colour_image_copy = extract_colour_image(image_path)
+        colour_image_copy = extract_colour_image(image_path)/255
         blue,green,red = cv2.split(colour_image_copy)
         bpp_per_image = []
         rmse_per_image = []
         for k in num_components_list:
-            P = PCA(int(k))
-            grayscale_image = grayscale_image_copy.copy()
-            patches = extract_patches(grayscale_image)
-            flattened_patches = patches.reshape(patches.shape[0],-1)
-            P.fit(flattened_patches)
-            compressedImage = P.transform(flattened_patches)
-            save_compressed_patches("compressed_image.bin", compressedImage, grayscale_image.shape, patch_size=Config.patch_size, pca_model = P)
-            reconstructed_image = load_compressed_patches("compressed_image.bin", k)
-            rmse = calculate_rmse(grayscale_image, reconstructed_image)
-            bpp = calculate_bpp_pca(flattened_patches.shape, compressedImage.shape,patches.shape[1],k)
+            P_blue = PCA(int(k))
+            P_green = PCA(int(k))
+            P_red = PCA(int(k))
+            blue_patches = extract_patches(blue)
+            green_patches = extract_patches(green)
+            red_patches = extract_patches(red)
+            flattened_blue_patches = blue_patches.reshape(blue_patches.shape[0],-1)
+            flattened_green_patches = green_patches.reshape(green_patches.shape[0],-1)
+            flattened_red_patches = red_patches.reshape(red_patches.shape[0],-1)
+            P_blue.fit(flattened_blue_patches)
+            P_green.fit(flattened_green_patches)
+            P_red.fit(flattened_red_patches)
+            compressedBlueImage = P_blue.transform(flattened_blue_patches)
+            compressedGreenImage = P_green.transform(flattened_green_patches)
+            compressedRedImage = P_red.transform(flattened_red_patches)
+            save_compressed_patches("compressed_blue_image.bin", compressedBlueImage, blue.shape, patch_size=Config.patch_size, pca_model = P_blue)
+            save_compressed_patches("compressed_green_image.bin", compressedGreenImage, green.shape, patch_size=Config.patch_size, pca_model = P_green)
+            save_compressed_patches("compressed_red_image.bin", compressedRedImage, red.shape, patch_size=Config.patch_size, pca_model = P_red)
+            reconstructed_image = load_compressed_coloured_patches("compressed_blue_image.bin","compressed_green_image.bin","compressed_red_image.bin",k)
+            bpp = 3*calculate_bpp_pca(flattened_blue_patches.shape, compressedBlueImage.shape,blue_patches.shape[1],k)
+            rmse = calculate_rmse(reconstructed_image,colour_image_copy)
             print(f"Components {k}, RMSE: {rmse}, BPP: {bpp}")
             bpp_per_image.append(bpp)
             rmse_per_image.append(rmse)

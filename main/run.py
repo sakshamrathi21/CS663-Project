@@ -32,6 +32,9 @@ if __name__ == "__main__":
         elif file_number == "dpca":
             bpp_results, rmse_results = pca.dpca()
             rmse_vs_bpp_plot(bpp_results, rmse_results, get_image_paths(), plot_path='../results/dpca.png')
+        elif file_number == "cpca":
+            bpp_results, rmse_results = pca.cpca()
+            rmse_vs_bpp_plot(bpp_results, rmse_results, get_image_paths(), plot_path='../results/cpca.png')
         else:
             print("Invalid file name")
     elif len(sys.argv) == 3:

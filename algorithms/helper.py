@@ -170,6 +170,29 @@ def load_compressed_patches_without_model(filename,pca_model,components = Config
     decompressedPatches = (pca_model.inverse_transform(compressedPatches)).reshape((compressedPatches.shape[0],patch_size[0],patch_size[1]))
     reconstructed_image = reconstruct_image(decompressedPatches,image_shape,patch_size[0])
     return reconstructed_image
+def load_compressed_coloured_patches(bluefilename,greenfilename,redfilename,components = Config.default_components):
+    with open(bluefilename, 'rb') as file:
+        metadata = json.loads(file.readline().decode('utf-8'))
+        P_blue = pickle.load(file)
+        compressedBluePatches = pickle.load(file)
+    with open(greenfilename, 'rb') as file:
+        metadata = json.loads(file.readline().decode('utf-8'))
+        P_green = pickle.load(file)
+        compressedGreenPatches = pickle.load(file)
+    with open(redfilename, 'rb') as file:
+        metadata = json.loads(file.readline().decode('utf-8'))
+        P_red = pickle.load(file)
+        compressedRedPatches = pickle.load(file)
+    image_shape = metadata["image_shape"]
+    patch_size = metadata["patch_size"]
+    decompressedBluePatches = (P_blue.inverse_transform(compressedBluePatches)).reshape((compressedBluePatches.shape[0],patch_size[0],patch_size[1]))
+    decompressedGreenPatches = (P_green.inverse_transform(compressedGreenPatches)).reshape((compressedGreenPatches.shape[0],patch_size[0],patch_size[1]))
+    decompressedRedPatches = (P_red.inverse_transform(compressedRedPatches)).reshape((compressedRedPatches.shape[0],patch_size[0],patch_size[1]))
+    reconstructed_blue_image = reconstruct_image(decompressedBluePatches,image_shape,patch_size[0])
+    reconstructed_green_image = reconstruct_image(decompressedGreenPatches,image_shape,patch_size[0])
+    reconstructed_red_image = reconstruct_image(decompressedRedPatches,image_shape,patch_size[0])
+    reconstructed_image = cv2.merge((reconstructed_blue_image,reconstructed_green_image,reconstructed_red_image))
+    return reconstructed_image
 
 def load_compressed_patches(filename,components = Config.default_components):
     """

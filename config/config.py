@@ -7,6 +7,7 @@ class Config:
     basic_step_5_num_images = 20
     folder_path = '../images/grayscale/'
     dataset_path = '../images/msrcorid/miscellaneous/*.JPG'
+    coloured_dataset_path = '../images/landscape_images/colour/*.jpg'
     cartoon_path = '../images/paper-test/*.png'
     quality_factors = np.linspace(1, 100, 20)
     num_components_list = np.linspace(8,64,8)
