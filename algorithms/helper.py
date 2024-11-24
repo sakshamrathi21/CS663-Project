@@ -277,6 +277,7 @@ def calculate_rmse(original, compressed):
 def rmse_vs_bpp_plot(bpp_results, rmse_results, image_paths, plot_path):
     plt.figure(figsize=(12, 8))
     for i in range(len(image_paths)):
+        # print(i)
         plt.plot(bpp_results[i], rmse_results[i], label=f'Image {i+1}')
     plt.legend(loc="center left", bbox_to_anchor=(1, 0.5), title="Images")
     plt.tight_layout()
@@ -287,6 +288,7 @@ def rmse_vs_bpp_plot(bpp_results, rmse_results, image_paths, plot_path):
     plt.savefig(plot_path)
 
 def get_image_paths(cartoon = False,folder = False):
+    # os.listdir('../images/paper-test')
     if cartoon:
         image_paths = glob.glob(Config.cartoon_path)
     elif folder:
@@ -294,6 +296,8 @@ def get_image_paths(cartoon = False,folder = False):
     else:
         image_paths = glob.glob(Config.dataset_path)
     num_random_images = Config.basic_step_5_num_images
+    if cartoon:
+        num_random_images = 5
     image_paths = random.sample(image_paths, num_random_images)
     return image_paths
 

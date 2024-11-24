@@ -27,8 +27,8 @@ if __name__ == "__main__":
             bpp_results, rmse_results = colour.colour()
             rmse_vs_bpp_plot(bpp_results, rmse_results, get_image_paths(), plot_path='../results/colour.png')
         elif file_number == "paper":
-            bpp_results, rmse_results = paper.basic(20)
-            rmse_vs_bpp_plot(bpp_results, rmse_results, get_image_paths(), plot_path='../results/paper.png')
+            bpp_results, rmse_results = paper.basic()
+            rmse_vs_bpp_plot(bpp_results, rmse_results, get_image_paths(cartoon=True), plot_path='../results/paper.png')
         elif file_number == "dpca":
             bpp_results, rmse_results = pca.dpca()
             rmse_vs_bpp_plot(bpp_results, rmse_results, get_image_paths(), plot_path='../results/dpca.png')

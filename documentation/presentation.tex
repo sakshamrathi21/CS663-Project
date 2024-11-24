@@ -216,6 +216,45 @@
 	\end{figure}
 \end{frame}
 
+\section{Principal Component Analysis}
+
+\begin{frame}
+	\frametitle{PCA on a Single Grayscale Image}
+	\begin{itemize}
+		\item Pad the image suitably to make dimensions a multiple of $8$.
+		\item Divide the image into patches of size $8 \times 8$ and flatten them into column vectors.
+		\item Compute the column correlation and row correlation matrices of the matrix of flattened patches.
+		\item Compute the kronecker product of the two matrices and extract eigenvectors of this matrix with the top $k$ eigenvalues. These eigenvectors are the principal components.
+		\item Now project the original image onto the column space of these eigenvectors. The resulting matrix is the compressed image.
+		\item Reconstruct the image by multiplying the compressed image with the transpose of the eigenvectors. 
+	\end{itemize}
+\end{frame}
+
+\begin{frame}
+	\frametitle{PCA on a Dataset of Grayscale Images}
+	\begin{itemize}
+		\item Pad the images suitably to make dimensions a multiple of $8$.
+		\item Divide each image into patches of size $8 \times 8$ and flatten them into column vectors. Create a matrix whose columns are the flattened image patches.
+		\item Compute the column correlation and row correlation matrices of the matrix of flattened patches.
+		\item Compute the kronecker product of the two matrices and extract eigenvectors of this matrix with the top $k$ eigenvalues. These eigenvectors are the principal components.
+		\item Now project each of the original images onto the column space of these eigenvectors. The resulting matrix is the compressed image.
+		\item Reconstruct any image by multiplying the compressed image with the transpose of the eigenvectors. 
+	\end{itemize}
+\end{frame}
+
+\begin{frame}
+	\frametitle{PCA on a Single Coloured Image}
+	\begin{itemize}
+		\item Pad the image the suitably to make dimensions a multiple of $8$.
+		\item Treat each image channel as a grayscale image and run the PCA algorithm on each channel separately.
+		\item Extract the compressed image for each channel separately and merge them to get the compressed coloured image.
+		\item Reconstruct the image by multiplying the compressed image of each channel with the transpose of the eigenvectors of that channel.
+		\item Merge the reconstructed channels to get the reconstructed coloured image.
+	\end{itemize}
+\end{frame}
+
+
+
 \section{Paper Implementation}
 \begin{frame}
     \centering
@@ -249,6 +288,71 @@
 		\item Now, we have decoded the edge locations and the pixel values surrounding the edges. We use diffusion based inpainting to fill the remaining values.
 	\end{itemize}
 \end{frame}
+
+\begin{frame}
+	\frametitle{Results}
+	\begin{figure}
+		\centering
+		% \includegraphics{}
+		\includegraphics[width=0.7\textwidth]{../results/try_11_0.png}
+		\caption{Original vs Reconstructed Image}
+	\end{figure}
+\end{frame}
+
+
+\begin{frame}
+	\frametitle{Results}
+	\begin{figure}
+		\centering
+		% \includegraphics{}
+		\includegraphics[width=0.7\textwidth]{../results/try_11_1.png}
+		\caption{Original vs Reconstructed Image}
+	\end{figure}
+\end{frame}
+
+
+\begin{frame}
+	\frametitle{Results}
+	\begin{figure}
+		\centering
+		% \includegraphics{}
+		\includegraphics[width=0.7\textwidth]{../results/try_11_2.png}
+		\caption{Original vs Reconstructed Image}
+	\end{figure}
+\end{frame}
+
+
+\begin{frame}
+	\frametitle{Results}
+	\begin{figure}
+		\centering
+		% \includegraphics{}
+		\includegraphics[width=0.7\textwidth]{../results/try_11_3.png}
+		\caption{Original vs Reconstructed Image}
+	\end{figure}
+\end{frame}
+
+
+\begin{frame}
+	\frametitle{Results}
+	\begin{figure}
+		\centering
+		% \includegraphics{}
+		\includegraphics[width=0.7\textwidth]{../results/try_11_4.png}
+		\caption{Original vs Reconstructed Image}
+	\end{figure}
+\end{frame}
+
+\begin{frame}
+	\frametitle{Results}
+	\begin{figure}
+		\centering
+		% \includegraphics{}
+		\includegraphics[width=0.7\textwidth]{../results/paper.png}
+		\caption{Original vs Reconstructed Image}
+	\end{figure}
+\end{frame}
+
 
 
 

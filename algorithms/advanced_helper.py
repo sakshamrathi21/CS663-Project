@@ -49,7 +49,7 @@ def edgesMarrHildreth(img, sigma):
     return log, zero_crossing
 
 
-def decoder(mask_path, masked_image_path, orig_image_path, save_path):
+def decoder(mask_path, masked_image_path, orig_image_path, save_path, plot_path="../results/try.png"):
     """
     Decodes an image using the provided mask and performs homogenous diffusion
     to estimate the original image.
@@ -74,7 +74,7 @@ def decoder(mask_path, masked_image_path, orig_image_path, save_path):
 
     # Homogenous Diffusion parameters
     delta_t = 0.09
-    max_time = 100
+    max_time = 1000
 
     # Convert mask and image to double precision
     msk = np.expand_dims(mask_im.astype(np.float64) / 255, axis=-1)  # Normalize and expand mask
@@ -113,6 +113,15 @@ def decoder(mask_path, masked_image_path, orig_image_path, save_path):
     # plt.imshow(cv2.cvtColor(res_im, cv2.COLOR_BGR2RGB))
     # plt.title("Restored Image")
     # plt.show()
+
+    # I want to show both the images together:
+    fig, axs = plt.subplots(1, 2)
+    axs[0].imshow(cv2.cvtColor(orig_im, cv2.COLOR_BGR2RGB))
+    axs[0].set_title("Original Image")
+    axs[1].imshow(cv2.cvtColor(res_im, cv2.COLOR_BGR2RGB))
+    axs[1].set_title("Restored Image")
+    plt.savefig(plot_path)
+
 
     # Display the images
     # plt.figure()
@@ -238,10 +247,10 @@ def encode(image_path, window=7):
     # print(f"Size in bits: {size_in_bits}")
     return size_in_bits/im_pixels
 
-def decode(image_path):
+def decode(image_path, plot_path="../results/try.png"):
     os.system("zpaq x ../temp/compressed/masked_image.archive > /dev/null 2>&1")
     os.system("../jbigkit/pbmtools/jbgtopbm ../temp/compressed/masked_image.jbg ../temp/mask.pbm")
-    rmse = decoder('../temp/mask.pbm', '../temp/masked_image.png', image_path, '../temp/decoded_image.png')
+    rmse = decoder('../temp/mask.pbm', '../temp/masked_image.png', image_path, '../temp/decoded_image.png', plot_path)
     os.system("rm -rf ../temp/compressed")
     return rmse
     # PATH=../jbigkit/pbmtools
