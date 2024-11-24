@@ -67,7 +67,7 @@ def dpca():
     return bpp_results, rmse_results
 
 def cpca(num_paths = 20):
-    image_paths = get_image_paths(colour = True)[0:num_paths]
+    image_paths = get_image_paths()[0:num_paths]
     num_components_list = Config.num_components_list
     bpp_results = []
     rmse_results = []
