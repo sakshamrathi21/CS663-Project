@@ -16,9 +16,10 @@ In the advanced part of this project, we:-
 
 ## How to download the datasets
 The folders containing the datasets are available at:
-`https://github.com/sakshamrathi21/Image-Compression-Project/tree/main/images`
+- https://github.com/sakshamrathi21/Image-Compression-Project/tree/main/images OR
+- https://drive.google.com/drive/folders/14ArHoenKSdaGJ7WB250A8ZkXXRmb84wY?usp=sharing
 
-You can download the datasets from the above link.
+You can download the datasets from the above link. Make sure to place the datasets in the `images` directory.
 
 ## Instructions to run the code
 - Clone the repository using the following command:
