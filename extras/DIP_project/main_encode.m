@@ -1,1 +1,0 @@
-encoder('data/im3.png','data/m_im3.pbm','data/res_im3.png');
